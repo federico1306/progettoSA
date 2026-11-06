@@ -1,0 +1,1857 @@
+{
+  "experiment_a": {
+    "experiment": "Experiment A \u2014 Architect Council vs. Single-LLM Baselines",
+    "test_set_size": 12,
+    "best_single_llm_accuracy_pct": 75.0,
+    "council_untrained_accuracy_pct": 66.7,
+    "council_full_accuracy_pct": 100.0,
+    "gain_over_best_single_pct": 25.0,
+    "systems": [
+      {
+        "system_name": "Single LLM: Meta Llama Family (llama-3.3-70b-versatile)",
+        "system_type": "baseline_single_llm",
+        "accuracy_pct": 75.0,
+        "weighted_quality_pct": 83.3,
+        "avg_tradeoffs": 1.0,
+        "avg_citations": 1.0,
+        "avg_latency_ms": 0.0,
+        "llm_calls_per_decision": 1,
+        "details": [
+          {
+            "scenario_id": "SCEN-13",
+            "selected_option": "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "selected_option": "Ad-hoc Peer-to-Peer Event Choreography across 7 Services",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "selected_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "selected_option": "Mutable SQL Table with UPDATE Statements",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": false,
+            "quality_score": 0.0
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0
+          }
+        ]
+      },
+      {
+        "system_name": "Single LLM: Google Gemini Family (gemini-2.0-flash)",
+        "system_type": "baseline_single_llm",
+        "accuracy_pct": 75.0,
+        "weighted_quality_pct": 83.3,
+        "avg_tradeoffs": 1.0,
+        "avg_citations": 1.0,
+        "avg_latency_ms": 0.0,
+        "llm_calls_per_decision": 1,
+        "details": [
+          {
+            "scenario_id": "SCEN-13",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "selected_option": "Ad-hoc Peer-to-Peer Event Choreography across 7 Services",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "selected_option": "Transactional Outbox with Full Debezium + Kafka Connect Cluster",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "selected_option": "12-Month Feature Freeze & Big-Bang Cutover",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": false,
+            "quality_score": 0.0
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "selected_option": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0
+          }
+        ]
+      },
+      {
+        "system_name": "Single LLM: Alibaba Qwen Family (qwen/qwen3-32b)",
+        "system_type": "baseline_single_llm",
+        "accuracy_pct": 75.0,
+        "weighted_quality_pct": 83.3,
+        "avg_tradeoffs": 1.0,
+        "avg_citations": 1.0,
+        "avg_latency_ms": 0.0,
+        "llm_calls_per_decision": 1,
+        "details": [
+          {
+            "scenario_id": "SCEN-13",
+            "selected_option": "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "selected_option": "Ad-hoc Peer-to-Peer Event Choreography across 7 Services",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "selected_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "selected_option": "Mutable SQL Table with UPDATE Statements",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": false,
+            "quality_score": 0.0
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0
+          }
+        ]
+      },
+      {
+        "system_name": "Single LLM: Mistral / DeepSeek / Llama-Instant Family (llama-3.1-8b-instant)",
+        "system_type": "baseline_single_llm",
+        "accuracy_pct": 66.7,
+        "weighted_quality_pct": 75.0,
+        "avg_tradeoffs": 1.0,
+        "avg_citations": 1.0,
+        "avg_latency_ms": 0.0,
+        "llm_calls_per_decision": 1,
+        "details": [
+          {
+            "scenario_id": "SCEN-13",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "selected_option": "Ad-hoc Peer-to-Peer Event Choreography across 7 Services",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "selected_option": "12-Month Feature Freeze & Big-Bang Cutover",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": false,
+            "quality_score": 0.0
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "selected_option": "Multi-Cluster Istio Service Mesh + SPIFFE/SPIRE + Custom HSM Sidecars",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": false,
+            "quality_score": 0.5
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "selected_option": "Mutable SQL Table with UPDATE Statements",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": false,
+            "quality_score": 0.0
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0
+          }
+        ]
+      },
+      {
+        "system_name": "Architect Council (Debate + KB, Prior to Feedback)",
+        "system_type": "architect_council",
+        "accuracy_pct": 66.7,
+        "weighted_quality_pct": 70.8,
+        "avg_tradeoffs": 8.0,
+        "avg_citations": 3.0,
+        "avg_consensus_pct": 74.9,
+        "avg_latency_ms": 1.6,
+        "llm_calls_per_decision": 8,
+        "details": [
+          {
+            "scenario_id": "SCEN-13",
+            "title": "Packaging Line Vision Inspection Event Stream (3k Cameras)",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ADR-02",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "title": "Cleanroom Environmental Sensor Archive & SQL Reporting",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ADR-01",
+              "KB-PAT-01",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "title": "Internal Calibration Scheduling & Technician Portal",
+            "selected_option": "10 Microservices with Kubernetes Service Mesh & gRPC",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": false,
+            "quality_score": 0.5,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-03",
+              "KB-ISO-04",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "title": "Automated Reticle Mask Qualification Pipeline (7 Steps)",
+            "selected_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-06",
+              "KB-TAC-01",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "title": "Offshore Test Facility Telemetry with Intermittent Subsea Link",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-08",
+              "KB-ISO-02",
+              "KB-ADR-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "title": "Reliable Shipment Event Publication from PostgreSQL ERP",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-04",
+              "KB-TAC-01",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "title": "Incremental Replacement of Monolithic Factory Dispatch System",
+            "selected_option": "12-Month Feature Freeze & Big-Bang Cutover",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": false,
+            "quality_score": 0.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-TAC-04",
+              "KB-ADR-02",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "title": "Authentication & Authorization for 3 Internal Analytics APIs",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-04",
+              "KB-PAT-03",
+              "KB-ADR-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "title": "Export-Controlled Photomask Custody Chain Ledger",
+            "selected_option": "Mutable SQL Table with UPDATE Statements",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": false,
+            "quality_score": 0.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-03",
+              "KB-PAT-05",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "title": "Isolating Flaky Legacy SAP RFC Integration in Order Service",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-TAC-02",
+              "KB-PAT-08",
+              "KB-ISO-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "title": "Low-Latency Global Semiconductor Part-Number Lookup Service",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ISO-04",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "title": "Multi-Region Enterprise Engineering Platform (150 Devs, 18 Squads)",
+            "selected_option": "Single Monolithic Codebase with Shared Global State",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": false,
+            "quality_score": 0.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-04",
+              "KB-PAT-02",
+              "KB-PAT-07"
+            ]
+          }
+        ]
+      },
+      {
+        "system_name": "Architect Council (Full: Debate + KB + Feedback Loop)",
+        "system_type": "architect_council",
+        "accuracy_pct": 100.0,
+        "weighted_quality_pct": 100.0,
+        "avg_tradeoffs": 8.0,
+        "avg_citations": 3.0,
+        "avg_consensus_pct": 100.0,
+        "avg_latency_ms": 1.5,
+        "llm_calls_per_decision": 8,
+        "details": [
+          {
+            "scenario_id": "SCEN-13",
+            "title": "Packaging Line Vision Inspection Event Stream (3k Cameras)",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ADR-02",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "title": "Cleanroom Environmental Sensor Archive & SQL Reporting",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ADR-01",
+              "KB-PAT-01",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "title": "Internal Calibration Scheduling & Technician Portal",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-03",
+              "KB-ISO-04",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "title": "Automated Reticle Mask Qualification Pipeline (7 Steps)",
+            "selected_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-06",
+              "KB-TAC-01",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "title": "Offshore Test Facility Telemetry with Intermittent Subsea Link",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-08",
+              "KB-ISO-02",
+              "KB-ADR-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "title": "Reliable Shipment Event Publication from PostgreSQL ERP",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-04",
+              "KB-TAC-01",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "title": "Incremental Replacement of Monolithic Factory Dispatch System",
+            "selected_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-TAC-04",
+              "KB-ADR-02",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "title": "Authentication & Authorization for 3 Internal Analytics APIs",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-04",
+              "KB-PAT-03",
+              "KB-ADR-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "title": "Export-Controlled Photomask Custody Chain Ledger",
+            "selected_option": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-03",
+              "KB-PAT-05",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "title": "Isolating Flaky Legacy SAP RFC Integration in Order Service",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-TAC-02",
+              "KB-PAT-08",
+              "KB-ISO-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "title": "Low-Latency Global Semiconductor Part-Number Lookup Service",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ISO-04",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "title": "Multi-Region Enterprise Engineering Platform (150 Devs, 18 Squads)",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-04",
+              "KB-PAT-02",
+              "KB-PAT-07"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "experiment_b": {
+    "experiment": "Experiment B \u2014 Held-Out Test Set Accuracy Before vs. After Feedback Loop",
+    "feedback_set_size": 12,
+    "held_out_test_set_size": 12,
+    "accuracy_before_feedback_pct": 66.7,
+    "accuracy_after_feedback_pct": 100.0,
+    "accuracy_improvement_pct": 33.3,
+    "final_trust_weights": {
+      "agent_pragmatist": 2.0,
+      "agent_guardian": 2.0,
+      "agent_innovator": 0.55,
+      "agent_skeptic": 2.0
+    },
+    "learned_principles": [
+      {
+        "id": "LEARNED-01",
+        "principle": "[Semiconductor Manufacturing (Fab Telemetry)] With a 3-person ops team on-prem and 50k events/sec (<1s latency), NATS JetStream or Redpanda provides single-binary simplicity without JVM tuning, while Strimzi Kafka is acceptable if Kubernetes is already mature. Raw Kafka+ZK is too heavy, and AWS Kinesis violates on-prem data sovereignty.",
+        "preferred_pattern": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "rationale": "With a 3-person ops team on-prem and 50k events/sec (<1s latency), NATS JetStream or Redpanda provides single-binary simplicity without JVM tuning, while Strimzi Kafka is acceptable if Kubernetes is already mature. Raw Kafka+ZK is too heavy, and AWS Kinesis violates on-prem data sovereignty.",
+        "tags": [
+          "on-prem",
+          "small-team",
+          "<1s latency",
+          "5k tools (~50k events/sec)",
+          "latency",
+          "operability",
+          "reliability",
+          "cost"
+        ],
+        "created_at": "2026-11-06T21:18:55.084075+00:00"
+      },
+      {
+        "id": "LEARNED-02",
+        "principle": "[Semiconductor Yield Analytics] At 80k metrics/sec with heavy relational metadata joins and a 4-person PostgreSQL-skilled team, TimescaleDB satisfies throughput while keeping a single database engine and zero cross-DB sync pipelines.",
+        "preferred_pattern": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+        "rationale": "At 80k metrics/sec with heavy relational metadata joins and a 4-person PostgreSQL-skilled team, TimescaleDB satisfies throughput while keeping a single database engine and zero cross-DB sync pipelines.",
+        "tags": [
+          "small-team",
+          "on-prem",
+          "relational-joins",
+          "80k metrics/sec",
+          "operability",
+          "query-performance",
+          "maintainability",
+          "storage-efficiency"
+        ],
+        "created_at": "2026-11-06T21:18:55.087329+00:00"
+      },
+      {
+        "id": "LEARNED-03",
+        "principle": "[Enterprise Supply Chain] For a 5-developer team with no SRE and a 4-month deadline, a Modular Monolith avoids distributed systems tax while enforcing module boundaries for future extraction.",
+        "preferred_pattern": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+        "rationale": "For a 5-developer team with no SRE and a 4-month deadline, a Modular Monolith avoids distributed systems tax while enforcing module boundaries for future extraction.",
+        "tags": [
+          "small-team",
+          "tight-deadline",
+          "no-dedicated-sre",
+          "2k concurrent users",
+          "time-to-market",
+          "maintainability",
+          "simplicity",
+          "modifiability"
+        ],
+        "created_at": "2026-11-06T21:18:55.089591+00:00"
+      },
+      {
+        "id": "LEARNED-04",
+        "principle": "[Manufacturing Execution System (MES)] For an 8-step workflow with timeouts and compensating rollbacks, an Orchestrated Saga (Temporal/State Machine) prevents cyclic event spaghetti and gives a centralized audit trail.",
+        "preferred_pattern": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+        "rationale": "For an 8-step workflow with timeouts and compensating rollbacks, an Orchestrated Saga (Temporal/State Machine) prevents cyclic event spaghetti and gives a centralized audit trail.",
+        "tags": [
+          "8-step workflow",
+          "long-running timeouts",
+          "compensating actions",
+          "strict audit",
+          "reliability",
+          "observability",
+          "auditability",
+          "consistency"
+        ],
+        "created_at": "2026-11-06T21:18:55.092132+00:00"
+      },
+      {
+        "id": "LEARNED-05",
+        "principle": "[Industrial Edge & Multi-Site Manufacturing] An Edge-First Store-and-Forward Gateway processes local safety alerts in <1s and persists data to local disk during 4-hour WAN outages, syncing asynchronously upon reconnection.",
+        "preferred_pattern": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+        "rationale": "An Edge-First Store-and-Forward Gateway processes local safety alerts in <1s and persists data to local disk during 4-hour WAN outages, syncing asynchronously upon reconnection.",
+        "tags": [
+          "unreliable-wan",
+          "zero-data-loss",
+          "local-alerting",
+          "on-prem",
+          "availability",
+          "fault-tolerance",
+          "latency",
+          "reliability"
+        ],
+        "created_at": "2026-11-06T21:18:55.111082+00:00"
+      },
+      {
+        "id": "LEARNED-06",
+        "principle": "[Enterprise Order Processing] Transactional Outbox with a lightweight Polling Publisher guarantees at-least-once consistency using only PostgreSQL, avoiding the operational burden of running a Debezium + Kafka Connect cluster for a 3-person team.",
+        "preferred_pattern": "Transactional Outbox Table with Lightweight Polling Publisher",
+        "rationale": "Transactional Outbox with a lightweight Polling Publisher guarantees at-least-once consistency using only PostgreSQL, avoiding the operational burden of running a Debezium + Kafka Connect cluster for a 3-person team.",
+        "tags": [
+          "small-team",
+          "postgresql",
+          "no-lost-messages",
+          "minimal-infra",
+          "consistency",
+          "reliability",
+          "operability",
+          "simplicity"
+        ],
+        "created_at": "2026-11-06T21:18:55.113734+00:00"
+      },
+      {
+        "id": "LEARNED-07",
+        "principle": "[Legacy Modernization] Strangler Fig with an Anti-Corruption Layer migrates vertical slices incrementally behind a routing proxy, eliminating Big-Bang cutover risk while isolating the new domain model from legacy schema pollution.",
+        "preferred_pattern": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+        "rationale": "Strangler Fig with an Anti-Corruption Layer migrates vertical slices incrementally behind a routing proxy, eliminating Big-Bang cutover risk while isolating the new domain model from legacy schema pollution.",
+        "tags": [
+          "zero-downtime",
+          "18-month migration",
+          "live-production",
+          "modifiability",
+          "availability",
+          "risk-mitigation",
+          "evolvability"
+        ],
+        "created_at": "2026-11-06T21:18:55.116367+00:00"
+      },
+      {
+        "id": "LEARNED-08",
+        "principle": "[Platform Security] For 4 services and 2 developers, OIDC/OAuth2 JWT validation at the ingress gateway plus Kubernetes NetworkPolicies achieves strong security without the upgrade and debugging overhead of a full service mesh.",
+        "preferred_pattern": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+        "rationale": "For 4 services and 2 developers, OIDC/OAuth2 JWT validation at the ingress gateway plus Kubernetes NetworkPolicies achieves strong security without the upgrade and debugging overhead of a full service mesh.",
+        "tags": [
+          "small-team",
+          "4 services",
+          "internal-dashboard",
+          "rbac",
+          "security",
+          "operability",
+          "simplicity",
+          "maintainability"
+        ],
+        "created_at": "2026-11-06T21:18:55.118896+00:00"
+      },
+      {
+        "id": "LEARNED-09",
+        "principle": "[Compliance & Safety Systems] Event Sourcing with an append-only hash-chained table in PostgreSQL provides immutable auditability and temporal state reconstruction without external blockchain latency or CRUD state-overwrite loss.",
+        "preferred_pattern": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+        "rationale": "Event Sourcing with an append-only hash-chained table in PostgreSQL provides immutable auditability and temporal state reconstruction without external blockchain latency or CRUD state-overwrite loss.",
+        "tags": [
+          "regulatory-audit",
+          "tamper-evident",
+          "temporal-reconstruction",
+          "50 events/min",
+          "auditability",
+          "integrity",
+          "security",
+          "reliability"
+        ],
+        "created_at": "2026-11-06T21:18:55.136704+00:00"
+      },
+      {
+        "id": "LEARNED-10",
+        "principle": "[Logistics Integration] Bulkhead isolation ensures one slow carrier can only saturate its dedicated pool, while a Circuit Breaker trips fast and routes requests to an async retry queue.",
+        "preferred_pattern": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+        "rationale": "Bulkhead isolation ensures one slow carrier can only saturate its dedicated pool, while a Circuit Breaker trips fast and routes requests to an async retry queue.",
+        "tags": [
+          "unreliable-third-party",
+          "prevent-cascading-failure",
+          "fast-recovery",
+          "availability",
+          "fault-tolerance",
+          "resilience",
+          "latency"
+        ],
+        "created_at": "2026-11-06T21:18:55.139594+00:00"
+      },
+      {
+        "id": "LEARNED-11",
+        "principle": "[Enterprise Knowledge & Catalog] For a 99.5% read workload and a 3-person team, PostgreSQL with Read Replicas and Cache-Aside Redis delivers <10ms reads with minimal operational complexity.",
+        "preferred_pattern": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+        "rationale": "For a 99.5% read workload and a 3-person team, PostgreSQL with Read Replicas and Cache-Aside Redis delivers <10ms reads with minimal operational complexity.",
+        "tags": [
+          "99.5% reads",
+          "<50ms latency",
+          "small-team",
+          "latency",
+          "operability",
+          "read-scalability",
+          "simplicity"
+        ],
+        "created_at": "2026-11-06T21:18:55.142475+00:00"
+      },
+      {
+        "id": "LEARNED-12",
+        "principle": "[Global Enterprise Platform] With 120 engineers across 15 teams and dedicated Platform SREs, Conway's Law and release autonomy justify domain-aligned microservices with contract testing.",
+        "preferred_pattern": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+        "rationale": "With 120 engineers across 15 teams and dedicated Platform SREs, Conway's Law and release autonomy justify domain-aligned microservices with contract testing.",
+        "tags": [
+          "120 engineers",
+          "15 teams",
+          "dedicated-platform-sre",
+          "independent-releases",
+          "independent-deployability",
+          "scalability",
+          "fault-isolation",
+          "evolvability"
+        ],
+        "created_at": "2026-11-06T21:18:55.145306+00:00"
+      }
+    ],
+    "learning_curve": [
+      {
+        "iteration": 0,
+        "feedback_scenarios_seen": 0,
+        "learned_principles_count": 0,
+        "accuracy_pct": 66.7,
+        "weighted_quality_pct": 70.8,
+        "avg_consensus_pct": 74.9,
+        "trust_weights": {
+          "agent_pragmatist": 1.0,
+          "agent_guardian": 1.0,
+          "agent_innovator": 1.0,
+          "agent_skeptic": 1.0
+        },
+        "test_results": [
+          {
+            "scenario_id": "SCEN-13",
+            "title": "Packaging Line Vision Inspection Event Stream (3k Cameras)",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ADR-02",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "title": "Cleanroom Environmental Sensor Archive & SQL Reporting",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ADR-01",
+              "KB-PAT-01",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "title": "Internal Calibration Scheduling & Technician Portal",
+            "selected_option": "10 Microservices with Kubernetes Service Mesh & gRPC",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": false,
+            "quality_score": 0.5,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-03",
+              "KB-ISO-04",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "title": "Automated Reticle Mask Qualification Pipeline (7 Steps)",
+            "selected_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-06",
+              "KB-TAC-01",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "title": "Offshore Test Facility Telemetry with Intermittent Subsea Link",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-08",
+              "KB-ISO-02",
+              "KB-ADR-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "title": "Reliable Shipment Event Publication from PostgreSQL ERP",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-04",
+              "KB-TAC-01",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "title": "Incremental Replacement of Monolithic Factory Dispatch System",
+            "selected_option": "12-Month Feature Freeze & Big-Bang Cutover",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": false,
+            "quality_score": 0.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-TAC-04",
+              "KB-ADR-02",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "title": "Authentication & Authorization for 3 Internal Analytics APIs",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-04",
+              "KB-PAT-03",
+              "KB-ADR-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "title": "Export-Controlled Photomask Custody Chain Ledger",
+            "selected_option": "Mutable SQL Table with UPDATE Statements",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": false,
+            "quality_score": 0.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-03",
+              "KB-PAT-05",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "title": "Isolating Flaky Legacy SAP RFC Integration in Order Service",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-TAC-02",
+              "KB-PAT-08",
+              "KB-ISO-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "title": "Low-Latency Global Semiconductor Part-Number Lookup Service",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 75.0,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ISO-04",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "title": "Multi-Region Enterprise Engineering Platform (150 Devs, 18 Squads)",
+            "selected_option": "Single Monolithic Codebase with Shared Global State",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": false,
+            "quality_score": 0.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 74.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-04",
+              "KB-PAT-02",
+              "KB-PAT-07"
+            ]
+          }
+        ]
+      },
+      {
+        "iteration": 1,
+        "feedback_scenarios_seen": 4,
+        "learned_principles_count": 4,
+        "accuracy_pct": 100.0,
+        "weighted_quality_pct": 100.0,
+        "avg_consensus_pct": 89.9,
+        "trust_weights": {
+          "agent_pragmatist": 1.48,
+          "agent_guardian": 1.48,
+          "agent_innovator": 0.8,
+          "agent_skeptic": 1.48
+        },
+        "test_results": [
+          {
+            "scenario_id": "SCEN-13",
+            "title": "Packaging Line Vision Inspection Event Stream (3k Cameras)",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ADR-02",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "title": "Cleanroom Environmental Sensor Archive & SQL Reporting",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ADR-01",
+              "KB-PAT-01",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "title": "Internal Calibration Scheduling & Technician Portal",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-03",
+              "KB-ISO-04",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "title": "Automated Reticle Mask Qualification Pipeline (7 Steps)",
+            "selected_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-06",
+              "KB-TAC-01",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "title": "Offshore Test Facility Telemetry with Intermittent Subsea Link",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-08",
+              "KB-ISO-02",
+              "KB-ADR-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "title": "Reliable Shipment Event Publication from PostgreSQL ERP",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-04",
+              "KB-TAC-01",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "title": "Incremental Replacement of Monolithic Factory Dispatch System",
+            "selected_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-TAC-04",
+              "KB-ADR-02",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "title": "Authentication & Authorization for 3 Internal Analytics APIs",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-04",
+              "KB-PAT-03",
+              "KB-ADR-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "title": "Export-Controlled Photomask Custody Chain Ledger",
+            "selected_option": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-03",
+              "KB-PAT-05",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "title": "Isolating Flaky Legacy SAP RFC Integration in Order Service",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-TAC-02",
+              "KB-PAT-08",
+              "KB-ISO-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "title": "Low-Latency Global Semiconductor Part-Number Lookup Service",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ISO-04",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "title": "Multi-Region Enterprise Engineering Platform (150 Devs, 18 Squads)",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 84.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-04",
+              "KB-PAT-02",
+              "KB-PAT-07"
+            ]
+          }
+        ]
+      },
+      {
+        "iteration": 2,
+        "feedback_scenarios_seen": 8,
+        "learned_principles_count": 8,
+        "accuracy_pct": 100.0,
+        "weighted_quality_pct": 100.0,
+        "avg_consensus_pct": 96.9,
+        "trust_weights": {
+          "agent_pragmatist": 1.96,
+          "agent_guardian": 1.96,
+          "agent_innovator": 0.6,
+          "agent_skeptic": 1.96
+        },
+        "test_results": [
+          {
+            "scenario_id": "SCEN-13",
+            "title": "Packaging Line Vision Inspection Event Stream (3k Cameras)",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ADR-02",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "title": "Cleanroom Environmental Sensor Archive & SQL Reporting",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ADR-01",
+              "KB-PAT-01",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "title": "Internal Calibration Scheduling & Technician Portal",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-03",
+              "KB-ISO-04",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "title": "Automated Reticle Mask Qualification Pipeline (7 Steps)",
+            "selected_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-06",
+              "KB-TAC-01",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "title": "Offshore Test Facility Telemetry with Intermittent Subsea Link",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-08",
+              "KB-ISO-02",
+              "KB-ADR-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "title": "Reliable Shipment Event Publication from PostgreSQL ERP",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-04",
+              "KB-TAC-01",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "title": "Incremental Replacement of Monolithic Factory Dispatch System",
+            "selected_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-TAC-04",
+              "KB-ADR-02",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "title": "Authentication & Authorization for 3 Internal Analytics APIs",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-04",
+              "KB-PAT-03",
+              "KB-ADR-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "title": "Export-Controlled Photomask Custody Chain Ledger",
+            "selected_option": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 90.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-ISO-03",
+              "KB-PAT-05",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "title": "Isolating Flaky Legacy SAP RFC Integration in Order Service",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 90.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-TAC-02",
+              "KB-PAT-08",
+              "KB-ISO-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "title": "Low-Latency Global Semiconductor Part-Number Lookup Service",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 90.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ISO-04",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "title": "Multi-Region Enterprise Engineering Platform (150 Devs, 18 Squads)",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "SUPERMAJORITY",
+            "consensus_pct": 90.8,
+            "dissent_count": 1,
+            "citations": [
+              "KB-PAT-04",
+              "KB-PAT-02",
+              "KB-PAT-07"
+            ]
+          }
+        ]
+      },
+      {
+        "iteration": 3,
+        "feedback_scenarios_seen": 12,
+        "learned_principles_count": 12,
+        "accuracy_pct": 100.0,
+        "weighted_quality_pct": 100.0,
+        "avg_consensus_pct": 100.0,
+        "trust_weights": {
+          "agent_pragmatist": 2.0,
+          "agent_guardian": 2.0,
+          "agent_innovator": 0.55,
+          "agent_skeptic": 2.0
+        },
+        "test_results": [
+          {
+            "scenario_id": "SCEN-13",
+            "title": "Packaging Line Vision Inspection Event Stream (3k Cameras)",
+            "selected_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ADR-02",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-14",
+            "title": "Cleanroom Environmental Sensor Archive & SQL Reporting",
+            "selected_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ADR-01",
+              "KB-PAT-01",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-15",
+            "title": "Internal Calibration Scheduling & Technician Portal",
+            "selected_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-03",
+              "KB-ISO-04",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-16",
+            "title": "Automated Reticle Mask Qualification Pipeline (7 Steps)",
+            "selected_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-06",
+              "KB-TAC-01",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-17",
+            "title": "Offshore Test Facility Telemetry with Intermittent Subsea Link",
+            "selected_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-08",
+              "KB-ISO-02",
+              "KB-ADR-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-18",
+            "title": "Reliable Shipment Event Publication from PostgreSQL ERP",
+            "selected_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-04",
+              "KB-TAC-01",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-19",
+            "title": "Incremental Replacement of Monolithic Factory Dispatch System",
+            "selected_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-TAC-04",
+              "KB-ADR-02",
+              "KB-PAT-05"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-20",
+            "title": "Authentication & Authorization for 3 Internal Analytics APIs",
+            "selected_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-04",
+              "KB-PAT-03",
+              "KB-ADR-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-21",
+            "title": "Export-Controlled Photomask Custody Chain Ledger",
+            "selected_option": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-ISO-03",
+              "KB-PAT-05",
+              "KB-PAT-01"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-22",
+            "title": "Isolating Flaky Legacy SAP RFC Integration in Order Service",
+            "selected_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-TAC-02",
+              "KB-PAT-08",
+              "KB-ISO-02"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-23",
+            "title": "Low-Latency Global Semiconductor Part-Number Lookup Service",
+            "selected_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-01",
+              "KB-ISO-04",
+              "KB-PAT-03"
+            ]
+          },
+          {
+            "scenario_id": "SCEN-24",
+            "title": "Multi-Region Enterprise Engineering Platform (150 Devs, 18 Squads)",
+            "selected_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+            "exact_match": true,
+            "quality_score": 1.0,
+            "consensus_type": "UNANIMOUS",
+            "consensus_pct": 100.0,
+            "dissent_count": 0,
+            "citations": [
+              "KB-PAT-04",
+              "KB-PAT-02",
+              "KB-PAT-07"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

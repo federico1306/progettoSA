@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Assisted Software Architecting Council — 2026/27</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">AC</div>
+      <div>
+        <h1>AI Assisted Software Architecting Council</h1>
+        <p id="courseSubtitle">Software Architecture 2026/27 &bull; Prof. H. Muccini &bull; A. Di Paolo &amp; D. Spinosi (Micron)</p>
+      </div>
+    </div>
+    <div class="status-pills">
+      <span class="pill ok" id="sseStatusPill">&#9679; A2A Bus Live</span>
+      <span class="pill accent" id="llmModePill">Multi-LLM Active</span>
+      <span class="pill" id="memoryCountPill">Learned Principles: 0</span>
+      <a href="/defense" target="_blank" class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;text-decoration:none;">&#127891; Defense Slides</a>
+      <a href="/slides" target="_blank" class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;text-decoration:none;">&#128196; Prof. Slides</a>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" data-tab="tab-debate">&#9878; 1. Live Council Debate &amp; ADR</button>
+    <button class="tab-btn" data-tab="tab-agents">&#129302; 2. Swappable Agent Pool &amp; A2A Trace</button>
+    <button class="tab-btn" data-tab="tab-knowledge">&#128218; 3. Grounding KB &amp; Feedback Memory</button>
+    <button class="tab-btn" data-tab="tab-eval">&#128202; 4. Evaluation Lab (Exp A &amp; Exp B)</button>
+    <button class="tab-btn" data-tab="tab-docs">&#128208; 5. Architecture Doc &amp; ADRs</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- ================================================================== -->
+    <!-- TAB 1: LIVE COUNCIL DEBATE & HUMAN-IN-THE-LOOP                     -->
+    <!-- ================================================================== -->
+    <section class="tab-pane active" id="tab-debate">
+
+      <!-- 5-Phase Protocol Bar -->
+      <div class="phase-stepper" id="phaseStepper">
+        <div class="phase-step" data-phase="FRAME">
+          <div class="p-name">1. Frame</div>
+          <span class="p-sub">Chair sets context &amp; KB</span>
+        </div>
+        <div class="phase-step" data-phase="PROPOSE">
+          <div class="p-name">2. Propose</div>
+          <span class="p-sub">Each agent alone (no peeking)</span>
+        </div>
+        <div class="phase-step" data-phase="CRITIQUE">
+          <div class="p-name">3. Critique &amp; Revise</div>
+          <span class="p-sub">Challenge, defend or update</span>
+        </div>
+        <div class="phase-step" data-phase="CONVERGE">
+          <div class="p-name">4. Converge</div>
+          <span class="p-sub">Trust-weighted consensus</span>
+        </div>
+        <div class="phase-step" data-phase="DECIDE">
+          <div class="p-name">5. Decide</div>
+          <span class="p-sub">ADR Proposal + Dissent</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Left Column: Scenario & Controls -->
+        <div>
+          <div class="card">
+            <div class="eyebrow">Human Architect Input</div>
+            <div class="card-header">
+              <div class="card-title">&#127919; Architectural Decision Scenario</div>
+            </div>
+
+            <label for="scenarioSelect">Load Benchmark Scenario (24 Curated Scenarios):</label>
+            <select id="scenarioSelect"></select>
+
+            <label for="scenTitle">Decision Title:</label>
+            <input type="text" id="scenTitle" value="Cleanroom Factory Tool Event Ingestion (5k Tools)" />
+
+            <label for="scenPrompt">Requirements &amp; Context Prompt:</label>
+            <textarea id="scenPrompt" rows="3">Event ingestion for 5,000 wafer fabrication factory tools, strictly on-premise deployment, &lt;1s end-to-end latency for anomaly detection, maintained by a small 3-person ops team.</textarea>
+
+            <label for="scenOptions">Candidate Options (one per line):</label>
+            <textarea id="scenOptions" rows="4">NATS JetStream (Clustered Go Single-Binary) or Redpanda
+Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)
+Raw Self-Managed Apache Kafka + ZooKeeper + Flink Cluster
+AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div>
+                <label for="scenQAs">Quality Attributes:</label>
+                <input type="text" id="scenQAs" value="latency, operability, reliability, cost" />
+              </div>
+              <div>
+                <label for="scenConstraints">Hard Constraints:</label>
+                <input type="text" id="scenConstraints" value="on-prem, small-team, <1s latency" />
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:0.84rem;color:var(--muted);">
+              <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <input type="checkbox" id="useMemoryCheck" checked /> Use Long-Loop Feedback Memory
+              </label>
+              <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:pointer;" title="Uncheck to force live external HTTP calls for every agent">
+                <input type="checkbox" id="fastSimCheck" /> Fast Deterministic Sim Mode
+              </label>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" id="startDebateBtn" style="flex:1;">&#9889; Start Council Debate</button>
+              <button class="btn btn-outline" id="runBaselineBtn" title="Run each LLM in isolation without debate (Slide 11)">vs. Single LLM</button>
+            </div>
+          </div>
+
+          <!-- Pillar 3: Short-Loop & Long-Loop Feedback Controls -->
+          <div class="card" id="feedbackCard">
+            <div class="eyebrow">Pillar 3 &mdash; Human-in-the-Loop Learning</div>
+            <div class="card-header">
+              <div class="card-title">&#128257; Short Loop &amp; Long Loop Feedback</div>
+            </div>
+
+            <p style="font-size:0.83rem;color:var(--muted);margin-bottom:8px;">
+              <strong>Short Loop (Current Decision):</strong> Challenge the council or add a constraint to trigger an immediate revision round.
+            </p>
+            <textarea id="shortLoopInput" rows="2" placeholder="e.g., Our 3-person ops team has zero Kubernetes/JVM experience. Re-evaluate operational burden under KB-ADR-01."></textarea>
+            <div class="btn-row" style="margin-top:8px;">
+              <button class="btn btn-outline" id="shortLoopBtn" disabled style="width:100%;">&#128172; Send Short-Loop Critique &amp; Revise Proposal</button>
+            </div>
+
+            <hr style="border:none;border-top:1px solid var(--line);margin:16px 0;" />
+
+            <p style="font-size:0.83rem;color:var(--muted);margin-bottom:8px;">
+              <strong>Long Loop (All Future Decisions):</strong> Record final Human Architect decision to update agent trust weights &amp; store an organizational principle.
+            </p>
+            <label for="longLoopOption">Final Human Architect Decision:</label>
+            <select id="longLoopOption"></select>
+            <label for="longLoopRationale">Architectural Rationale / Learned Principle:</label>
+            <input type="text" id="longLoopRationale" value="For small ops teams (<=5 engineers) on-prem, prefer single-binary streaming/storage engines over multi-cluster JVM ecosystems." />
+            <div class="btn-row" style="margin-top:10px;">
+              <button class="btn btn-success" id="longLoopBtn" disabled style="width:100%;">&#9989; Commit Final Decision &amp; Teach Council</button>
+            </div>
+            <div id="learningFeedbackToast" style="margin-top:10px;font-size:0.83rem;color:#86efac;display:none;"></div>
+          </div>
+        </div>
+
+        <!-- Right Column: Live Debate Feed + Synthesized ADR -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="eyebrow">Pillar 2 &mdash; Observable A2A Protocol</div>
+                <div class="card-title">&#128172; Live Council Debate Transcript</div>
+              </div>
+              <span class="badge" id="debateStatusBadge">Ready</span>
+            </div>
+
+            <div class="debate-stream" id="debateStream">
+              <div style="text-align:center;padding:40px 20px;color:var(--muted);">
+                Click <strong>"Start Council Debate"</strong> to watch the Peer Architects propose in isolation, challenge each other with Knowledge Base citations, and converge on a formal ADR proposal.
+              </div>
+            </div>
+          </div>
+
+          <!-- Synthesized ADR Proposal + Minority Dissent -->
+          <div id="adrContainer" style="display:none;"></div>
+
+          <!-- Single-LLM Baseline Comparison Box -->
+          <div id="baselineCompareContainer" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- TAB 2: SWAPPABLE AGENT POOL & A2A TRACE INSPECTOR                  -->
+    <!-- ================================================================== -->
+    <section class="tab-pane" id="tab-agents">
+      <div class="grid-2">
+        <div>
+          <div class="card">
+            <div class="eyebrow">Pillar 1 &amp; Pillar 2 &mdash; Swappable Architecture</div>
+            <div class="card-header">
+              <div class="card-title">&#10133; Hot-Swap / Add Peer Architect Agent</div>
+              <button class="btn btn-outline" id="resetAgentsBtn" style="padding:4px 10px;font-size:0.78rem;">Reset Pool</button>
+            </div>
+            <p style="font-size:0.83rem;color:var(--muted);margin-bottom:10px;">
+              Add a new architect seat or swap any agent's LLM provider/model at runtime without code changes (Slide 8: <em>"Swappable &mdash; add an agent without rewrites"</em>).
+            </p>
+            <label>Agent ID:</label>
+            <input type="text" id="newAgentId" value="agent_cost_auditor" />
+            <label>Agent Name:</label>
+            <input type="text" id="newAgentName" value="FinOps &amp; Sustainability Architect" />
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div>
+                <label>Stance / Temperament:</label>
+                <input type="text" id="newAgentStance" value="Cost-Optimizer" />
+              </div>
+              <div>
+                <label>LLM Family Label:</label>
+                <input type="text" id="newAgentFamily" value="DeepSeek / Mistral Family" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div>
+                <label>Provider:</label>
+                <select id="newAgentProvider">
+                  <option value="groq">groq</option>
+                  <option value="gemini">gemini</option>
+                  <option value="openrouter">openrouter</option>
+                  <option value="openai">openai</option>
+                  <option value="anthropic">anthropic</option>
+                </select>
+              </div>
+              <div>
+                <label>Model ID:</label>
+                <input type="text" id="newAgentModel" value="llama-3.1-8b-instant" />
+              </div>
+            </div>
+            <label>Architect Mandate:</label>
+            <textarea id="newAgentMandate" rows="2">Full software architect focused on Total Cost of Ownership (TCO), infrastructure efficiency, and FinOps proportionality.</textarea>
+            <label>Priority Quality Attributes (comma-separated):</label>
+            <input type="text" id="newAgentPriorities" value="cost, operability, resource-utilization" />
+            <div class="btn-row">
+              <button class="btn btn-primary" id="saveAgentBtn" style="width:100%;">&#128190; Hot-Swap / Add Agent to Council</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="eyebrow">Active Council Seats (&ge;3 Distinct LLM Families)</div>
+            <div class="card-header">
+              <div class="card-title">&#128101; Peer Architect Pool &amp; Learned Trust Weights</div>
+            </div>
+            <div class="cards-grid" id="agentPoolGrid"></div>
+          </div>
+
+          <div class="card">
+            <div class="eyebrow">Typed Message Schema &amp; Causality Trace</div>
+            <div class="card-header">
+              <div class="card-title">&#128269; Raw A2A Message Bus Inspector</div>
+            </div>
+            <div id="rawTraceContainer" style="max-height:420px;overflow-y:auto;font-family:Consolas,monospace;font-size:0.8rem;background:var(--bg);padding:12px;border-radius:10px;border:1px solid var(--line);">
+              No messages recorded in current session yet. Run a debate in Tab 1 to inspect typed A2A JSON contracts.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- TAB 3: GROUNDING KNOWLEDGE BASE & LONG-LOOP MEMORY                 -->
+    <!-- ================================================================== -->
+    <section class="tab-pane" id="tab-knowledge">
+      <div class="grid-2">
+        <div>
+          <div class="card">
+            <div class="eyebrow">Pillar 3 &mdash; Long-Loop Learning State</div>
+            <div class="card-header">
+              <div class="card-title">&#129504; Learned Organizational Principles &amp; Trust</div>
+              <button class="btn btn-outline" id="resetMemoryBtn" style="padding:4px 10px;font-size:0.78rem;">Reset Memory</button>
+            </div>
+            <div id="memoryExplorerContainer"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="eyebrow">Slide 9 &mdash; Grounding &amp; Provenance</div>
+            <div class="card-header">
+              <div class="card-title">&#128218; Shared Architectural Knowledge Base (ISO/IEC 25010, Patterns, Tactics, ADRs)</div>
+            </div>
+            <div class="cards-grid" id="kbGrid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- TAB 4: EVALUATION LAB — EXPERIMENT A & EXPERIMENT B                -->
+    <!-- ================================================================== -->
+    <section class="tab-pane" id="tab-eval">
+      <div class="cards-grid" style="margin-bottom:18px;">
+        <div class="card">
+          <div class="eyebrow">Slide 11 &mdash; Experiment A</div>
+          <div class="card-header">
+            <div class="card-title">&#9878; Council vs. Single-LLM Baselines</div>
+            <button class="btn btn-primary" id="runExpABtn">&#9654; Run Experiment A</button>
+          </div>
+          <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px;">
+            Tests whether the multi-agent Council beats each individual LLM running alone (single prompt, no roles, no debate, no feedback loop) across the 12 Held-Out Test Set scenarios.
+          </p>
+          <div id="expAResults"></div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">Slide 12 &mdash; Experiment B</div>
+          <div class="card-header">
+            <div class="card-title">&#128200; Feedback Loop Learning Curve (Before vs. After)</div>
+            <button class="btn btn-success" id="runExpBBtn">&#9654; Run Experiment B</button>
+          </div>
+          <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px;">
+            Splits the 24-scenario benchmark into <strong>12 Feedback Set</strong> scenarios and <strong>12 Held-Out Test Set</strong> scenarios. Measures Council accuracy on the Held-Out Test Set across 4 feedback training checkpoints (0, 4, 8, and 12 feedback scenarios).
+          </p>
+          <div id="expBResults"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- TAB 5: ARCHITECTURE DOC, ADRs & TEAM DELIVERABLES                  -->
+    <!-- ================================================================== -->
+    <section class="tab-pane" id="tab-docs">
+      <div class="grid-2">
+        <div>
+          <div class="card">
+            <div class="eyebrow">Deliverables 2, 3 &amp; 4</div>
+            <div class="card-header">
+              <div class="card-title">&#128193; Project Documentation &amp; ADRs</div>
+            </div>
+            <div id="docListContainer" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="eyebrow">Project Team (4 Members)</div>
+            <div class="card-header">
+              <div class="card-title">&#127891; Team Roster</div>
+            </div>
+            <ul id="teamList" style="list-style:none;font-size:0.9rem;color:var(--muted);display:grid;gap:8px;"></ul>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" id="activeDocTitle">&#128208; Document Viewer</div>
+            </div>
+            <div class="doc-viewer" id="docViewerContent">Select a document or ADR on the left to inspect its contents.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
+

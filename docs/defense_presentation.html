@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Architecture Defense — AI Assisted Software Architecting Council</title>
+<style>
+:root{
+  --bg:#0d0d1a; --card:#1c1c34; --ink:#f4f5fb; --muted:#aab1c8;
+  --line:#2a2a45; --accent:#b800e6; --green:#22c55e; --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;}
+#deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;}
+.slide{height:100vh;width:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;padding:5vh 6vw;position:relative;overflow:hidden;}
+.slide-inner{width:100%;max-width:1180px;position:relative;}
+.tag{position:absolute;top:18px;left:24px;font-size:.8rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;}
+.slide.title{background:linear-gradient(135deg,#8b00c8 0%,#5c0080 25%,#1a0030 55%,#0d0d1a 100%);text-align:center;}
+.slide.title h1{font-size:3.2rem;font-weight:900;margin-bottom:14px;}
+.slide.title .subtitle{font-size:1.45rem;color:rgba(255,255,255,.85);}
+.slide.title .meta{margin-top:26px;font-size:1.1rem;color:rgba(255,255,255,.68);}
+.eyebrow{font-size:1rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.slide-title{font-size:2.4rem;font-weight:900;margin-bottom:10px;padding-bottom:12px;border-bottom:2px solid var(--line);}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:20px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;}
+.card h3{font-size:1.35rem;font-weight:800;margin-bottom:6px;}
+.card p{font-size:1.1rem;color:var(--muted);}
+.stat{font-size:2.6rem;font-weight:900;color:var(--accent);line-height:1.1;margin-bottom:4px;}
+.arch{display:grid;gap:10px;margin-top:18px;}
+.layer{display:grid;grid-template-columns:240px 1fr;gap:12px;align-items:stretch;}
+.layer .lname{border-radius:10px;padding:12px 16px;font-weight:800;font-size:1.1rem;color:#fff;display:flex;align-items:center;}
+.layer .boxes{display:flex;gap:10px;flex-wrap:wrap;}
+.layer .box{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:1.05rem;text-align:center;display:flex;align-items:center;justify-content:center;}
+.l1 .lname{background:#7c3aed;}.l2 .lname{background:#2563eb;}.l3 .lname{background:#d97706;}.l4 .lname{background:#16a34a;}
+.flow{display:flex;align-items:stretch;justify-content:center;gap:0;flex-wrap:wrap;margin:22px 0 8px;row-gap:12px;}
+.flow-step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-weight:700;font-size:1.15rem;text-align:center;min-width:140px;max-width:190px;}
+.flow-step span{display:block;font-weight:400;font-size:.95rem;color:var(--muted);margin-top:4px;}
+.flow-step.hl{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+.flow-arrow{display:flex;align-items:center;color:var(--accent);font-size:1.6rem;font-weight:800;padding:0 8px;}
+table{width:100%;border-collapse:collapse;margin-top:18px;font-size:1.05rem;}
+th,td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:left;}
+th{color:var(--muted);background:rgba(255,255,255,.04);}
+.demo-btn{display:inline-block;margin-top:20px;padding:14px 28px;border-radius:12px;background:linear-gradient(135deg,#b800e6,#22c55e);color:#fff;font-weight:800;font-size:1.2rem;text-decoration:none;}
+</style>
+</head>
+<body>
+<div id="deck">
+
+  <!-- SLIDE 1: TITLE -->
+  <section class="slide title">
+    <span class="tag">Architecture Defense &bull; Deliverable 6</span>
+    <div class="slide-inner">
+      <h1>AI Assisted Software Architecting Council</h1>
+      <p class="subtitle">Multi-LLM Peer Architect Board with Grounded Debate &amp; Dual-Loop Human Feedback</p>
+      <p class="meta">Team: Studente 1 &bull; Studente 2 &bull; Studente 3 &bull; Studente 4<br/>Software Architecture 2026/27 &mdash; Prof. H. Muccini, A. Di Paolo (Micron), D. Spinosi (Micron)</p>
+      <a href="/" class="demo-btn">&#9889; Open Interactive Live Demo</a>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: 4-LAYER SYSTEM ARCHITECTURE -->
+  <section class="slide">
+    <div class="slide-inner">
+      <p class="eyebrow">Deliverable 2 &mdash; Software Architecture</p>
+      <h1 class="slide-title">Four-Layer Agentic System Architecture</h1>
+      <div class="arch">
+        <div class="layer l1">
+          <div class="lname">1. Presentation &amp; SSE</div>
+          <div class="boxes">
+            <div class="box">Live Debate SPA</div>
+            <div class="box">SSE Real-Time Stream</div>
+            <div class="box">A2A JSON Trace Inspector</div>
+            <div class="box">Evaluation Lab UI</div>
+          </div>
+        </div>
+        <div class="layer l2">
+          <div class="lname">2. Protocol Orchestrator</div>
+          <div class="boxes">
+            <div class="box">5-Phase State Machine</div>
+            <div class="box">Chair Synthesizer Agent</div>
+            <div class="box">Swappable Agent Registry</div>
+            <div class="box">Single-LLM Baseline Runner</div>
+          </div>
+        </div>
+        <div class="layer l3">
+          <div class="lname">3. Bus, KB &amp; Learning</div>
+          <div class="boxes">
+            <div class="box">Typed A2A Pub/Sub Bus</div>
+            <div class="box">Shared ISO 25010 &amp; Pattern KB</div>
+            <div class="box">Short-Loop Revision Engine</div>
+            <div class="box">Long-Loop Trust &amp; Principles</div>
+          </div>
+        </div>
+        <div class="layer l4">
+          <div class="lname">4. Multi-LLM Adapter</div>
+          <div class="boxes">
+            <div class="box">OpenAI GPT-OSS 120B (Groq)</div>
+            <div class="box">Google Gemini 2.5 Flash</div>
+            <div class="box">Alibaba Qwen 3.8 27B</div>
+            <div class="box">GPT-OSS 20B / ALLaM-2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: PILLAR 1 & 2 -->
+  <section class="slide">
+    <div class="slide-inner">
+      <p class="eyebrow">Pillars 1 &amp; 2 &mdash; Diverse Council &amp; 5-Phase Protocol</p>
+      <h1 class="slide-title">Think Alone First, Then Challenge with Evidence</h1>
+      <div class="flow">
+        <div class="flow-step">1. Frame<span>Chair sets context, QAs &amp; retrieves KB</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step hl">2. Propose<span>4 agents in strict isolation (no peeking)</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step hl">3. Critique<span>Challenge peers &amp; flip only on KB proof</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">4. Converge<span>Trust-weighted consensus tally</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">5. Decide<span>Formal ADR + Minority Dissent</span></div>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>&#9881; Pragmatist</h3><p><strong>GPT-OSS 120B</strong> &bull; Protects small teams from operational overload.</p></div>
+        <div class="card"><h3>&#128737; Guardian</h3><p><strong>Gemini 2.5 Flash</strong> &bull; Prioritizes reliability, security &amp; sovereignty.</p></div>
+        <div class="card"><h3>&#128640; Innovator</h3><p><strong>Qwen 3.8 27B</strong> &bull; Champions high-scale &amp; cloud-native evolution.</p></div>
+        <div class="card"><h3>&#129488; Skeptic</h3><p><strong>GPT-OSS 20B / ALLaM</strong> &bull; Exposes hidden Day-2 TCO &amp; demands citations.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: EXPERIMENT A & B RESULTS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <p class="eyebrow">Deliverable 4 &mdash; Experimental Evaluation (24 Scenarios: 12 Feedback / 12 Held-Out Test)</p>
+      <h1 class="slide-title">Quantitative Proof: Experiment A &amp; Experiment B</h1>
+      <div class="cards">
+        <div class="card"><div class="stat">100.0%</div><h3>Full Council Accuracy</h3><p>Beats best single LLM (<strong>75.0%</strong>) by <strong>+25.0%</strong> on Held-Out Test Set.</p></div>
+        <div class="card"><div class="stat">+33.3%</div><h3>Feedback Loop Gain</h3><p>Held-Out Test accuracy rises from <strong>66.7%</strong> (Iter 0) to <strong>100.0%</strong> (Iter 3).</p></div>
+        <div class="card"><div class="stat">8.0x</div><h3>Trade-off Coverage</h3><p>8 explicit quality trade-offs &amp; 3 verified KB citations per ADR vs. 1 in baseline.</p></div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>System / Checkpoint (Held-Out Test Set, N=12)</th><th>Exact Accuracy</th><th>Quality Score</th><th>Avg Consensus</th><th>Trade-offs</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Best Single LLM Alone (No Debate, No Memory)</td><td>75.0%</td><td>83.3%</td><td>N/A</td><td>1.0</td></tr>
+          <tr><td>Architect Council — Iteration 0 (Before Feedback)</td><td>66.7%</td><td>70.8%</td><td>74.9%</td><td>8.0</td></tr>
+          <tr><td>Architect Council — Iteration 1 (After 4 Feedback Scenarios)</td><td>100.0%</td><td>100.0%</td><td>89.9%</td><td>8.0</td></tr>
+          <tr style="background:rgba(34,197,94,.12);font-weight:700;"><td>Architect Council — Iteration 3 (After 12 Feedback Scenarios)</td><td>100.0%</td><td>100.0%</td><td>100.0%</td><td>8.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

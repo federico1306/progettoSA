@@ -1,0 +1,552 @@
+{
+  "version": "1.0",
+  "agent_trust_weights": {
+    "agent_pragmatist": 2.0,
+    "agent_guardian": 2.0,
+    "agent_innovator": 0.55,
+    "agent_skeptic": 2.0
+  },
+  "learned_principles": [
+    {
+      "id": "LEARNED-01",
+      "principle": "[Semiconductor Manufacturing (Fab Telemetry)] With a 3-person ops team on-prem and 50k events/sec (<1s latency), NATS JetStream or Redpanda provides single-binary simplicity without JVM tuning, while Strimzi Kafka is acceptable if Kubernetes is already mature. Raw Kafka+ZK is too heavy, and AWS Kinesis violates on-prem data sovereignty.",
+      "preferred_pattern": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "rationale": "With a 3-person ops team on-prem and 50k events/sec (<1s latency), NATS JetStream or Redpanda provides single-binary simplicity without JVM tuning, while Strimzi Kafka is acceptable if Kubernetes is already mature. Raw Kafka+ZK is too heavy, and AWS Kinesis violates on-prem data sovereignty.",
+      "tags": [
+        "on-prem",
+        "small-team",
+        "<1s latency",
+        "5k tools (~50k events/sec)",
+        "latency",
+        "operability",
+        "reliability",
+        "cost"
+      ],
+      "created_at": "2026-11-06T21:18:55.084075+00:00"
+    },
+    {
+      "id": "LEARNED-02",
+      "principle": "[Semiconductor Yield Analytics] At 80k metrics/sec with heavy relational metadata joins and a 4-person PostgreSQL-skilled team, TimescaleDB satisfies throughput while keeping a single database engine and zero cross-DB sync pipelines.",
+      "preferred_pattern": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+      "rationale": "At 80k metrics/sec with heavy relational metadata joins and a 4-person PostgreSQL-skilled team, TimescaleDB satisfies throughput while keeping a single database engine and zero cross-DB sync pipelines.",
+      "tags": [
+        "small-team",
+        "on-prem",
+        "relational-joins",
+        "80k metrics/sec",
+        "operability",
+        "query-performance",
+        "maintainability",
+        "storage-efficiency"
+      ],
+      "created_at": "2026-11-06T21:18:55.087329+00:00"
+    },
+    {
+      "id": "LEARNED-03",
+      "principle": "[Enterprise Supply Chain] For a 5-developer team with no SRE and a 4-month deadline, a Modular Monolith avoids distributed systems tax while enforcing module boundaries for future extraction.",
+      "preferred_pattern": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+      "rationale": "For a 5-developer team with no SRE and a 4-month deadline, a Modular Monolith avoids distributed systems tax while enforcing module boundaries for future extraction.",
+      "tags": [
+        "small-team",
+        "tight-deadline",
+        "no-dedicated-sre",
+        "2k concurrent users",
+        "time-to-market",
+        "maintainability",
+        "simplicity",
+        "modifiability"
+      ],
+      "created_at": "2026-11-06T21:18:55.089591+00:00"
+    },
+    {
+      "id": "LEARNED-04",
+      "principle": "[Manufacturing Execution System (MES)] For an 8-step workflow with timeouts and compensating rollbacks, an Orchestrated Saga (Temporal/State Machine) prevents cyclic event spaghetti and gives a centralized audit trail.",
+      "preferred_pattern": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+      "rationale": "For an 8-step workflow with timeouts and compensating rollbacks, an Orchestrated Saga (Temporal/State Machine) prevents cyclic event spaghetti and gives a centralized audit trail.",
+      "tags": [
+        "8-step workflow",
+        "long-running timeouts",
+        "compensating actions",
+        "strict audit",
+        "reliability",
+        "observability",
+        "auditability",
+        "consistency"
+      ],
+      "created_at": "2026-11-06T21:18:55.092132+00:00"
+    },
+    {
+      "id": "LEARNED-05",
+      "principle": "[Industrial Edge & Multi-Site Manufacturing] An Edge-First Store-and-Forward Gateway processes local safety alerts in <1s and persists data to local disk during 4-hour WAN outages, syncing asynchronously upon reconnection.",
+      "preferred_pattern": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+      "rationale": "An Edge-First Store-and-Forward Gateway processes local safety alerts in <1s and persists data to local disk during 4-hour WAN outages, syncing asynchronously upon reconnection.",
+      "tags": [
+        "unreliable-wan",
+        "zero-data-loss",
+        "local-alerting",
+        "on-prem",
+        "availability",
+        "fault-tolerance",
+        "latency",
+        "reliability"
+      ],
+      "created_at": "2026-11-06T21:18:55.111082+00:00"
+    },
+    {
+      "id": "LEARNED-06",
+      "principle": "[Enterprise Order Processing] Transactional Outbox with a lightweight Polling Publisher guarantees at-least-once consistency using only PostgreSQL, avoiding the operational burden of running a Debezium + Kafka Connect cluster for a 3-person team.",
+      "preferred_pattern": "Transactional Outbox Table with Lightweight Polling Publisher",
+      "rationale": "Transactional Outbox with a lightweight Polling Publisher guarantees at-least-once consistency using only PostgreSQL, avoiding the operational burden of running a Debezium + Kafka Connect cluster for a 3-person team.",
+      "tags": [
+        "small-team",
+        "postgresql",
+        "no-lost-messages",
+        "minimal-infra",
+        "consistency",
+        "reliability",
+        "operability",
+        "simplicity"
+      ],
+      "created_at": "2026-11-06T21:18:55.113734+00:00"
+    },
+    {
+      "id": "LEARNED-07",
+      "principle": "[Legacy Modernization] Strangler Fig with an Anti-Corruption Layer migrates vertical slices incrementally behind a routing proxy, eliminating Big-Bang cutover risk while isolating the new domain model from legacy schema pollution.",
+      "preferred_pattern": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+      "rationale": "Strangler Fig with an Anti-Corruption Layer migrates vertical slices incrementally behind a routing proxy, eliminating Big-Bang cutover risk while isolating the new domain model from legacy schema pollution.",
+      "tags": [
+        "zero-downtime",
+        "18-month migration",
+        "live-production",
+        "modifiability",
+        "availability",
+        "risk-mitigation",
+        "evolvability"
+      ],
+      "created_at": "2026-11-06T21:18:55.116367+00:00"
+    },
+    {
+      "id": "LEARNED-08",
+      "principle": "[Platform Security] For 4 services and 2 developers, OIDC/OAuth2 JWT validation at the ingress gateway plus Kubernetes NetworkPolicies achieves strong security without the upgrade and debugging overhead of a full service mesh.",
+      "preferred_pattern": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+      "rationale": "For 4 services and 2 developers, OIDC/OAuth2 JWT validation at the ingress gateway plus Kubernetes NetworkPolicies achieves strong security without the upgrade and debugging overhead of a full service mesh.",
+      "tags": [
+        "small-team",
+        "4 services",
+        "internal-dashboard",
+        "rbac",
+        "security",
+        "operability",
+        "simplicity",
+        "maintainability"
+      ],
+      "created_at": "2026-11-06T21:18:55.118896+00:00"
+    },
+    {
+      "id": "LEARNED-09",
+      "principle": "[Compliance & Safety Systems] Event Sourcing with an append-only hash-chained table in PostgreSQL provides immutable auditability and temporal state reconstruction without external blockchain latency or CRUD state-overwrite loss.",
+      "preferred_pattern": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+      "rationale": "Event Sourcing with an append-only hash-chained table in PostgreSQL provides immutable auditability and temporal state reconstruction without external blockchain latency or CRUD state-overwrite loss.",
+      "tags": [
+        "regulatory-audit",
+        "tamper-evident",
+        "temporal-reconstruction",
+        "50 events/min",
+        "auditability",
+        "integrity",
+        "security",
+        "reliability"
+      ],
+      "created_at": "2026-11-06T21:18:55.136704+00:00"
+    },
+    {
+      "id": "LEARNED-10",
+      "principle": "[Logistics Integration] Bulkhead isolation ensures one slow carrier can only saturate its dedicated pool, while a Circuit Breaker trips fast and routes requests to an async retry queue.",
+      "preferred_pattern": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+      "rationale": "Bulkhead isolation ensures one slow carrier can only saturate its dedicated pool, while a Circuit Breaker trips fast and routes requests to an async retry queue.",
+      "tags": [
+        "unreliable-third-party",
+        "prevent-cascading-failure",
+        "fast-recovery",
+        "availability",
+        "fault-tolerance",
+        "resilience",
+        "latency"
+      ],
+      "created_at": "2026-11-06T21:18:55.139594+00:00"
+    },
+    {
+      "id": "LEARNED-11",
+      "principle": "[Enterprise Knowledge & Catalog] For a 99.5% read workload and a 3-person team, PostgreSQL with Read Replicas and Cache-Aside Redis delivers <10ms reads with minimal operational complexity.",
+      "preferred_pattern": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+      "rationale": "For a 99.5% read workload and a 3-person team, PostgreSQL with Read Replicas and Cache-Aside Redis delivers <10ms reads with minimal operational complexity.",
+      "tags": [
+        "99.5% reads",
+        "<50ms latency",
+        "small-team",
+        "latency",
+        "operability",
+        "read-scalability",
+        "simplicity"
+      ],
+      "created_at": "2026-11-06T21:18:55.142475+00:00"
+    },
+    {
+      "id": "LEARNED-12",
+      "principle": "[Global Enterprise Platform] With 120 engineers across 15 teams and dedicated Platform SREs, Conway's Law and release autonomy justify domain-aligned microservices with contract testing.",
+      "preferred_pattern": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+      "rationale": "With 120 engineers across 15 teams and dedicated Platform SREs, Conway's Law and release autonomy justify domain-aligned microservices with contract testing.",
+      "tags": [
+        "120 engineers",
+        "15 teams",
+        "dedicated-platform-sre",
+        "independent-releases",
+        "independent-deployability",
+        "scalability",
+        "fault-isolation",
+        "evolvability"
+      ],
+      "created_at": "2026-11-06T21:18:55.145306+00:00"
+    }
+  ],
+  "episodic_decisions": [
+    {
+      "session_id": "sess-b6df0144",
+      "scenario_title": "Cleanroom Factory Tool Event Ingestion (5k Tools)",
+      "final_chosen_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "human_rationale": "With a 3-person ops team on-prem and 50k events/sec (<1s latency), NATS JetStream or Redpanda provides single-binary simplicity without JVM tuning, while Strimzi Kafka is acceptable if Kubernetes is already mature. Raw Kafka+ZK is too heavy, and AWS Kinesis violates on-prem data sovereignty.",
+      "agent_votes": {
+        "agent_pragmatist": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_guardian": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_innovator": "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+        "agent_skeptic": "NATS JetStream (Clustered Go Single-Binary) or Redpanda"
+      },
+      "principle_id": "LEARNED-01",
+      "timestamp": "2026-11-06T21:18:55.084078+00:00"
+    },
+    {
+      "session_id": "sess-5dc30d5a",
+      "scenario_title": "Wafer Metrology Time-Series Storage & Relational Defect Joins",
+      "final_chosen_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+      "human_rationale": "At 80k metrics/sec with heavy relational metadata joins and a 4-person PostgreSQL-skilled team, TimescaleDB satisfies throughput while keeping a single database engine and zero cross-DB sync pipelines.",
+      "agent_votes": {
+        "agent_pragmatist": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+        "agent_guardian": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+        "agent_innovator": "ClickHouse Cluster + Separate PostgreSQL + Debezium Sync",
+        "agent_skeptic": "TimescaleDB (PostgreSQL Hypertables + Native Compression)"
+      },
+      "principle_id": "LEARNED-02",
+      "timestamp": "2026-11-06T21:18:55.087332+00:00"
+    },
+    {
+      "session_id": "sess-a9629a23",
+      "scenario_title": "B2B Equipment Spare-Parts Portal Modernization",
+      "final_chosen_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+      "human_rationale": "For a 5-developer team with no SRE and a 4-month deadline, a Modular Monolith avoids distributed systems tax while enforcing module boundaries for future extraction.",
+      "agent_votes": {
+        "agent_pragmatist": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+        "agent_guardian": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+        "agent_innovator": "12 Fine-Grained Microservices with Istio Service Mesh & Polyglot DBs",
+        "agent_skeptic": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL"
+      },
+      "principle_id": "LEARNED-03",
+      "timestamp": "2026-11-06T21:18:55.089593+00:00"
+    },
+    {
+      "session_id": "sess-9af3e966",
+      "scenario_title": "Multi-Step Wafer Lot Hold & Calibration Workflow",
+      "final_chosen_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+      "human_rationale": "For an 8-step workflow with timeouts and compensating rollbacks, an Orchestrated Saga (Temporal/State Machine) prevents cyclic event spaghetti and gives a centralized audit trail.",
+      "agent_votes": {
+        "agent_pragmatist": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+        "agent_guardian": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+        "agent_innovator": "Pure Event Choreography across 8 Services via Pub/Sub Topics",
+        "agent_skeptic": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)"
+      },
+      "principle_id": "LEARNED-04",
+      "timestamp": "2026-11-06T21:18:55.092134+00:00"
+    },
+    {
+      "session_id": "sess-ce8f8c0a",
+      "scenario_title": "Remote Assembly Sub-Plant Telemetry over Unreliable WAN",
+      "final_chosen_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+      "human_rationale": "An Edge-First Store-and-Forward Gateway processes local safety alerts in <1s and persists data to local disk during 4-hour WAN outages, syncing asynchronously upon reconnection.",
+      "agent_votes": {
+        "agent_pragmatist": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+        "agent_guardian": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+        "agent_innovator": "Direct Synchronous REST Calls from Machines to Central HQ Cloud",
+        "agent_skeptic": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)"
+      },
+      "principle_id": "LEARNED-05",
+      "timestamp": "2026-11-06T21:18:55.111085+00:00"
+    },
+    {
+      "session_id": "sess-92133a71",
+      "scenario_title": "Dual-Write Consistency between Order DB and Notification Broker",
+      "final_chosen_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+      "human_rationale": "Transactional Outbox with a lightweight Polling Publisher guarantees at-least-once consistency using only PostgreSQL, avoiding the operational burden of running a Debezium + Kafka Connect cluster for a 3-person team.",
+      "agent_votes": {
+        "agent_pragmatist": "Transactional Outbox Table with Lightweight Polling Publisher",
+        "agent_guardian": "Transactional Outbox Table with Lightweight Polling Publisher",
+        "agent_innovator": "Transactional Outbox with Full Debezium + Kafka Connect Cluster",
+        "agent_skeptic": "Transactional Outbox Table with Lightweight Polling Publisher"
+      },
+      "principle_id": "LEARNED-06",
+      "timestamp": "2026-11-06T21:18:55.113738+00:00"
+    },
+    {
+      "session_id": "sess-86263a0b",
+      "scenario_title": "Legacy 20-Year-Old Factory ERP Displacement",
+      "final_chosen_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+      "human_rationale": "Strangler Fig with an Anti-Corruption Layer migrates vertical slices incrementally behind a routing proxy, eliminating Big-Bang cutover risk while isolating the new domain model from legacy schema pollution.",
+      "agent_votes": {
+        "agent_pragmatist": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+        "agent_guardian": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+        "agent_innovator": "Big-Bang Rewrite from Scratch with Weekend Cutover",
+        "agent_skeptic": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)"
+      },
+      "principle_id": "LEARNED-07",
+      "timestamp": "2026-11-06T21:18:55.116370+00:00"
+    },
+    {
+      "session_id": "sess-1b183617",
+      "scenario_title": "Internal Internal-Tooling API Security for 4 Services",
+      "final_chosen_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+      "human_rationale": "For 4 services and 2 developers, OIDC/OAuth2 JWT validation at the ingress gateway plus Kubernetes NetworkPolicies achieves strong security without the upgrade and debugging overhead of a full service mesh.",
+      "agent_votes": {
+        "agent_pragmatist": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+        "agent_guardian": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+        "agent_innovator": "Full Istio Service Mesh + SPIFFE/SPIRE Federation + Custom Envoy WASM Filters",
+        "agent_skeptic": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies"
+      },
+      "principle_id": "LEARNED-08",
+      "timestamp": "2026-11-06T21:18:55.118899+00:00"
+    },
+    {
+      "session_id": "sess-f99cbd1c",
+      "scenario_title": "Regulatory Semiconductor Chemical Audit Ledger",
+      "final_chosen_option": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+      "human_rationale": "Event Sourcing with an append-only hash-chained table in PostgreSQL provides immutable auditability and temporal state reconstruction without external blockchain latency or CRUD state-overwrite loss.",
+      "agent_votes": {
+        "agent_pragmatist": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+        "agent_guardian": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+        "agent_innovator": "Standard CRUD Overwrite Table with Last-Modified Timestamp",
+        "agent_skeptic": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL"
+      },
+      "principle_id": "LEARNED-09",
+      "timestamp": "2026-11-06T21:18:55.136707+00:00"
+    },
+    {
+      "session_id": "sess-dba007cb",
+      "scenario_title": "Protection Against Slow Third-Party Carrier Shipping API",
+      "final_chosen_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+      "human_rationale": "Bulkhead isolation ensures one slow carrier can only saturate its dedicated pool, while a Circuit Breaker trips fast and routes requests to an async retry queue.",
+      "agent_votes": {
+        "agent_pragmatist": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+        "agent_guardian": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+        "agent_innovator": "Increase Global HTTP Timeout to 120 Seconds and Double Thread Pool",
+        "agent_skeptic": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue"
+      },
+      "principle_id": "LEARNED-10",
+      "timestamp": "2026-11-06T21:18:55.139597+00:00"
+    },
+    {
+      "session_id": "sess-fe7231f0",
+      "scenario_title": "Global Multi-Fab Read-Heavy Equipment Catalog",
+      "final_chosen_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+      "human_rationale": "For a 99.5% read workload and a 3-person team, PostgreSQL with Read Replicas and Cache-Aside Redis delivers <10ms reads with minimal operational complexity.",
+      "agent_votes": {
+        "agent_pragmatist": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+        "agent_guardian": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+        "agent_innovator": "Full Event-Sourced Multi-Cluster Cassandra with Custom Paxos Engine",
+        "agent_skeptic": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis"
+      },
+      "principle_id": "LEARNED-11",
+      "timestamp": "2026-11-06T21:18:55.142478+00:00"
+    },
+    {
+      "session_id": "sess-653cf962",
+      "scenario_title": "Large-Scale Autonomous Org (120 Engineers, 15 Domain Teams)",
+      "final_chosen_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+      "human_rationale": "With 120 engineers across 15 teams and dedicated Platform SREs, Conway's Law and release autonomy justify domain-aligned microservices with contract testing.",
+      "agent_votes": {
+        "agent_pragmatist": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+        "agent_guardian": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+        "agent_innovator": "Keep Single Shared Monolith with Weekly Manual Merge Freeze",
+        "agent_skeptic": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS"
+      },
+      "principle_id": "LEARNED-12",
+      "timestamp": "2026-11-06T21:18:55.145309+00:00"
+    }
+  ],
+  "feedback_history": [
+    {
+      "session_id": "sess-b6df0144",
+      "scenario_title": "Cleanroom Factory Tool Event Ingestion (5k Tools)",
+      "final_chosen_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "human_rationale": "With a 3-person ops team on-prem and 50k events/sec (<1s latency), NATS JetStream or Redpanda provides single-binary simplicity without JVM tuning, while Strimzi Kafka is acceptable if Kubernetes is already mature. Raw Kafka+ZK is too heavy, and AWS Kinesis violates on-prem data sovereignty.",
+      "agent_votes": {
+        "agent_pragmatist": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_guardian": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_innovator": "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+        "agent_skeptic": "NATS JetStream (Clustered Go Single-Binary) or Redpanda"
+      },
+      "principle_id": "LEARNED-01",
+      "timestamp": "2026-11-06T21:18:55.084078+00:00"
+    },
+    {
+      "session_id": "sess-5dc30d5a",
+      "scenario_title": "Wafer Metrology Time-Series Storage & Relational Defect Joins",
+      "final_chosen_option": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+      "human_rationale": "At 80k metrics/sec with heavy relational metadata joins and a 4-person PostgreSQL-skilled team, TimescaleDB satisfies throughput while keeping a single database engine and zero cross-DB sync pipelines.",
+      "agent_votes": {
+        "agent_pragmatist": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+        "agent_guardian": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+        "agent_innovator": "ClickHouse Cluster + Separate PostgreSQL + Debezium Sync",
+        "agent_skeptic": "TimescaleDB (PostgreSQL Hypertables + Native Compression)"
+      },
+      "principle_id": "LEARNED-02",
+      "timestamp": "2026-11-06T21:18:55.087332+00:00"
+    },
+    {
+      "session_id": "sess-a9629a23",
+      "scenario_title": "B2B Equipment Spare-Parts Portal Modernization",
+      "final_chosen_option": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+      "human_rationale": "For a 5-developer team with no SRE and a 4-month deadline, a Modular Monolith avoids distributed systems tax while enforcing module boundaries for future extraction.",
+      "agent_votes": {
+        "agent_pragmatist": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+        "agent_guardian": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+        "agent_innovator": "12 Fine-Grained Microservices with Istio Service Mesh & Polyglot DBs",
+        "agent_skeptic": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL"
+      },
+      "principle_id": "LEARNED-03",
+      "timestamp": "2026-11-06T21:18:55.089593+00:00"
+    },
+    {
+      "session_id": "sess-9af3e966",
+      "scenario_title": "Multi-Step Wafer Lot Hold & Calibration Workflow",
+      "final_chosen_option": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+      "human_rationale": "For an 8-step workflow with timeouts and compensating rollbacks, an Orchestrated Saga (Temporal/State Machine) prevents cyclic event spaghetti and gives a centralized audit trail.",
+      "agent_votes": {
+        "agent_pragmatist": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+        "agent_guardian": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+        "agent_innovator": "Pure Event Choreography across 8 Services via Pub/Sub Topics",
+        "agent_skeptic": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)"
+      },
+      "principle_id": "LEARNED-04",
+      "timestamp": "2026-11-06T21:18:55.092134+00:00"
+    },
+    {
+      "session_id": "sess-ce8f8c0a",
+      "scenario_title": "Remote Assembly Sub-Plant Telemetry over Unreliable WAN",
+      "final_chosen_option": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+      "human_rationale": "An Edge-First Store-and-Forward Gateway processes local safety alerts in <1s and persists data to local disk during 4-hour WAN outages, syncing asynchronously upon reconnection.",
+      "agent_votes": {
+        "agent_pragmatist": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+        "agent_guardian": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+        "agent_innovator": "Direct Synchronous REST Calls from Machines to Central HQ Cloud",
+        "agent_skeptic": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)"
+      },
+      "principle_id": "LEARNED-05",
+      "timestamp": "2026-11-06T21:18:55.111085+00:00"
+    },
+    {
+      "session_id": "sess-92133a71",
+      "scenario_title": "Dual-Write Consistency between Order DB and Notification Broker",
+      "final_chosen_option": "Transactional Outbox Table with Lightweight Polling Publisher",
+      "human_rationale": "Transactional Outbox with a lightweight Polling Publisher guarantees at-least-once consistency using only PostgreSQL, avoiding the operational burden of running a Debezium + Kafka Connect cluster for a 3-person team.",
+      "agent_votes": {
+        "agent_pragmatist": "Transactional Outbox Table with Lightweight Polling Publisher",
+        "agent_guardian": "Transactional Outbox Table with Lightweight Polling Publisher",
+        "agent_innovator": "Transactional Outbox with Full Debezium + Kafka Connect Cluster",
+        "agent_skeptic": "Transactional Outbox Table with Lightweight Polling Publisher"
+      },
+      "principle_id": "LEARNED-06",
+      "timestamp": "2026-11-06T21:18:55.113738+00:00"
+    },
+    {
+      "session_id": "sess-86263a0b",
+      "scenario_title": "Legacy 20-Year-Old Factory ERP Displacement",
+      "final_chosen_option": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+      "human_rationale": "Strangler Fig with an Anti-Corruption Layer migrates vertical slices incrementally behind a routing proxy, eliminating Big-Bang cutover risk while isolating the new domain model from legacy schema pollution.",
+      "agent_votes": {
+        "agent_pragmatist": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+        "agent_guardian": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+        "agent_innovator": "Big-Bang Rewrite from Scratch with Weekend Cutover",
+        "agent_skeptic": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)"
+      },
+      "principle_id": "LEARNED-07",
+      "timestamp": "2026-11-06T21:18:55.116370+00:00"
+    },
+    {
+      "session_id": "sess-1b183617",
+      "scenario_title": "Internal Internal-Tooling API Security for 4 Services",
+      "final_chosen_option": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+      "human_rationale": "For 4 services and 2 developers, OIDC/OAuth2 JWT validation at the ingress gateway plus Kubernetes NetworkPolicies achieves strong security without the upgrade and debugging overhead of a full service mesh.",
+      "agent_votes": {
+        "agent_pragmatist": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+        "agent_guardian": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+        "agent_innovator": "Full Istio Service Mesh + SPIFFE/SPIRE Federation + Custom Envoy WASM Filters",
+        "agent_skeptic": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies"
+      },
+      "principle_id": "LEARNED-08",
+      "timestamp": "2026-11-06T21:18:55.118899+00:00"
+    },
+    {
+      "session_id": "sess-f99cbd1c",
+      "scenario_title": "Regulatory Semiconductor Chemical Audit Ledger",
+      "final_chosen_option": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+      "human_rationale": "Event Sourcing with an append-only hash-chained table in PostgreSQL provides immutable auditability and temporal state reconstruction without external blockchain latency or CRUD state-overwrite loss.",
+      "agent_votes": {
+        "agent_pragmatist": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+        "agent_guardian": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+        "agent_innovator": "Standard CRUD Overwrite Table with Last-Modified Timestamp",
+        "agent_skeptic": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL"
+      },
+      "principle_id": "LEARNED-09",
+      "timestamp": "2026-11-06T21:18:55.136707+00:00"
+    },
+    {
+      "session_id": "sess-dba007cb",
+      "scenario_title": "Protection Against Slow Third-Party Carrier Shipping API",
+      "final_chosen_option": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+      "human_rationale": "Bulkhead isolation ensures one slow carrier can only saturate its dedicated pool, while a Circuit Breaker trips fast and routes requests to an async retry queue.",
+      "agent_votes": {
+        "agent_pragmatist": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+        "agent_guardian": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+        "agent_innovator": "Increase Global HTTP Timeout to 120 Seconds and Double Thread Pool",
+        "agent_skeptic": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue"
+      },
+      "principle_id": "LEARNED-10",
+      "timestamp": "2026-11-06T21:18:55.139597+00:00"
+    },
+    {
+      "session_id": "sess-fe7231f0",
+      "scenario_title": "Global Multi-Fab Read-Heavy Equipment Catalog",
+      "final_chosen_option": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+      "human_rationale": "For a 99.5% read workload and a 3-person team, PostgreSQL with Read Replicas and Cache-Aside Redis delivers <10ms reads with minimal operational complexity.",
+      "agent_votes": {
+        "agent_pragmatist": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+        "agent_guardian": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+        "agent_innovator": "Full Event-Sourced Multi-Cluster Cassandra with Custom Paxos Engine",
+        "agent_skeptic": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis"
+      },
+      "principle_id": "LEARNED-11",
+      "timestamp": "2026-11-06T21:18:55.142478+00:00"
+    },
+    {
+      "session_id": "sess-653cf962",
+      "scenario_title": "Large-Scale Autonomous Org (120 Engineers, 15 Domain Teams)",
+      "final_chosen_option": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+      "human_rationale": "With 120 engineers across 15 teams and dedicated Platform SREs, Conway's Law and release autonomy justify domain-aligned microservices with contract testing.",
+      "agent_votes": {
+        "agent_pragmatist": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+        "agent_guardian": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+        "agent_innovator": "Keep Single Shared Monolith with Weekly Manual Merge Freeze",
+        "agent_skeptic": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS"
+      },
+      "principle_id": "LEARNED-12",
+      "timestamp": "2026-11-06T21:18:55.145309+00:00"
+    }
+  ]
+}

@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI Assisted Software Architecting Project — 2026/27</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23b800e6'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-weight='800' font-size='34' fill='white'>AC</text></svg>">
+<style>
+:root{
+  --bg:#0d0d1a; --card:#1c1c34; --ink:#f4f5fb; --muted:#aab1c8;
+  --line:#2a2a45; --accent:#b800e6; --green:#22c55e; --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;}
+#deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;}
+.slide{height:100vh;width:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;padding:5vh 6vw;position:relative;overflow:hidden;}
+.slide-inner{width:100%;max-width:1180px;position:relative;transform-origin:center center;}
+.tag{position:absolute;top:18px;left:24px;font-size:.8rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;}
+.slide.title,.slide.divider{background:linear-gradient(135deg,#8b00c8 0%,#5c0080 25%,#1a0030 55%,#0d0d1a 100%);text-align:center;}
+.slide.title h1{font-size:3.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:14px;}
+.slide.title .subtitle{font-size:1.6rem;color:rgba(255,255,255,.82);font-weight:500;}
+.slide.title .meta{margin-top:28px;font-size:1.15rem;color:rgba(255,255,255,.6);}
+.slide.divider h2{font-size:2.8rem;font-weight:900;}
+.slide.divider .subtitle{font-size:1.5rem;color:rgba(255,255,255,.8);margin-top:10px;}
+.eyebrow{font-size:1.05rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.slide-title{font-size:2.8rem;font-weight:900;margin-bottom:6px;padding-bottom:14px;border-bottom:2px solid var(--line);}
+.bullets{list-style:none;margin-top:24px;}
+.bullets li{font-size:1.5rem;margin-bottom:16px;padding-left:34px;position:relative;}
+.bullets li::before{content:"\25B8";position:absolute;left:0;color:var(--accent);font-weight:900;}
+.bullets li strong{color:#fff;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:24px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 26px;}
+.card h3{font-size:1.6rem;font-weight:800;margin-bottom:8px;}
+.card p{font-size:1.35rem;color:var(--muted);}
+.card .icon{font-size:2.2rem;margin-bottom:4px;}
+.stat{font-size:3rem;font-weight:900;color:var(--accent);margin-bottom:4px;line-height:1.1;}
+.note{margin-top:22px;font-size:1.3rem;color:var(--muted);}
+.note strong{color:#fff;}
+.fs-btn{position:fixed;top:16px;right:16px;z-index:200;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.fs-btn:hover{background:rgba(255,255,255,.22);}
+.progress{position:fixed;left:0;bottom:0;height:8px;width:0;background:linear-gradient(90deg,#9333ea,#22c55e);z-index:200;transition:width .15s;}
+.slide-nav{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:9px;z-index:200;}
+.slide-nav a{width:11px;height:11px;border-radius:50%;border:2px solid rgba(255,255,255,.5);display:block;transition:background .2s,border-color .2s;}
+.slide-nav a.active{background:var(--accent);border-color:var(--accent);}
+.slide-number{font-size:1rem;font-weight:700;color:var(--muted);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:5px 12px;}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:none;}
+/* flow */
+.flow{display:flex;align-items:stretch;justify-content:center;gap:0;flex-wrap:wrap;margin:26px 0 8px;row-gap:16px;}
+.flow-step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-weight:700;font-size:1.35rem;color:var(--ink);text-align:center;min-width:140px;max-width:190px;}
+.flow-step span{display:block;font-weight:400;font-size:1.1rem;color:var(--muted);margin-top:4px;}
+.flow-step.hl{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+.flow-arrow{display:flex;align-items:center;color:var(--accent);font-size:1.8rem;font-weight:800;padding:0 8px;}
+.loop-back{text-align:center;color:var(--green);font-size:1.3rem;font-weight:700;margin-top:12px;}
+/* phases */
+.phases{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin:26px 0 8px;}
+.phase{border-radius:12px;padding:16px 18px;color:#fff;}
+.phase .wk{font-size:1rem;font-weight:700;opacity:.85;text-transform:uppercase;letter-spacing:.06em;}
+.phase h3{margin:2px 0 6px;font-size:1.45rem;}
+.phase p{margin:0;font-size:1.1rem;opacity:.92;}
+.phase .ms{margin-top:10px;font-size:1.05rem;font-weight:700;background:rgba(0,0,0,.25);border-radius:8px;padding:4px 8px;display:inline-block;}
+.phase.p1{background:#7c3aed;}.phase.p2{background:#2563eb;}.phase.p3{background:#d97706;}.phase.p4{background:#16a34a;}.phase.p5{background:#db2777;}
+/* compare */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 8px;}
+.compare .col{border-radius:14px;padding:20px 24px;border:1px solid var(--line);background:var(--card);}
+.compare .col h3{margin:0 0 12px;font-size:1.6rem;}
+.compare .col p{font-size:1.3rem;color:var(--muted);margin-bottom:10px;}
+.compare .col ul{list-style:none;}
+.compare .col li{font-size:1.35rem;margin-bottom:10px;padding-left:26px;position:relative;}
+.compare .col li::before{content:"\2022";position:absolute;left:6px;color:var(--accent);font-weight:900;}
+.compare .col.good{border-left:5px solid #16a34a;}.compare .col.mid{border-left:5px solid #d97706;}.compare .col.bad{border-left:5px solid #dc2626;}
+/* layered architecture */
+.arch{display:grid;gap:10px;margin-top:24px;}
+.layer{display:grid;grid-template-columns:230px 1fr;gap:12px;align-items:stretch;}
+.layer .lname{border-radius:10px;padding:12px 16px;font-weight:800;font-size:1.3rem;color:#fff;display:flex;align-items:center;}
+.layer .boxes{display:flex;gap:10px;flex-wrap:wrap;}
+.layer .box{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:1.3rem;text-align:center;display:flex;align-items:center;justify-content:center;}
+.l1 .lname{background:#7c3aed;}.l2 .lname{background:#2563eb;}.l3 .lname{background:#d97706;}.l4 .lname{background:#16a34a;}
+/* debate transcript */
+.chat{display:grid;gap:10px;margin-top:22px;}
+.msg{border-radius:14px;padding:11px 18px;font-size:1.3rem;max-width:92%;background:var(--card);border:1px solid var(--line);}
+.msg.user{background:#2a2a45;}
+.msg.final{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.6);}
+.who{font-weight:800;margin-right:8px;}
+.who.h{color:#fff;}.who.chair{color:#c084fc;}.who.perf{color:#60a5fa;}.who.sec{color:#f87171;}.who.cost{color:#fbbf24;}.who.ok{color:var(--green);}
+.indent{margin-left:6%;}
+/* criteria */
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+.crit .c{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;padding:18px 22px;}
+.crit .c h3{font-size:1.5rem;font-weight:800;margin-bottom:6px;}
+.crit .c h3 .n{color:var(--accent);margin-right:8px;}
+.crit .c p{font-size:1.3rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<button class="fs-btn" id="fsBtn" title="Fullscreen">&#9974;</button>
+<div class="progress" id="progress"></div>
+<nav class="slide-nav" id="slideNav"></nav>
+
+<div id="deck">
+
+  <!-- TITLE -->
+  <section class="slide title" id="slide-1">
+    <span class="tag">Software Architecture &bull; Course Project</span>
+    <div class="slide-inner">
+      <h1 class="reveal">AI Assisted Software Architecting Project</h1>
+      <p class="subtitle reveal">A council of AI architects, each powered by a different LLM, that debate, agree and propose a decision</p>
+      <p class="meta reveal">Software Architecture 2026/27 &bull; Prof. H. Muccini &bull; Attilio Di Paolo (Micron) &bull; Daniele Spinosi (Micron)</p>
+    </div>
+  </section>
+
+  <!-- BACKGROUND -->
+  <section class="slide" id="slide-2">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Background</p>
+      <h1 class="slide-title reveal">Good architecture decisions come from debate</h1>
+      <div class="cards">
+        <div class="card reveal"><div class="icon">&#9878;</div><h3>Trade-offs, not answers</h3><p>Every choice balances <strong>competing quality attributes</strong>.</p></div>
+        <div class="card reveal"><div class="icon">&#128101;</div><h3>Boards, not individuals</h3><p>Real decisions emerge from <strong>architecture review boards</strong> with diverse views.</p></div>
+        <div class="card reveal"><div class="icon">&#129302;</div><h3>One LLM, one blind spot</h3><p>A single prompt gives <strong>one confident view</strong> &mdash; no challenge, no dissent.</p></div>
+      </div>
+      <p class="note reveal"><strong>Hypothesis to test:</strong> a council of specialized agents decides better than a single AI call.</p>
+    </div>
+  </section>
+
+  <!-- VISION -->
+  <section class="slide" id="slide-3">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Project goal</p>
+      <h1 class="slide-title reveal">A council that argues, then agrees</h1>
+      <div class="chat">
+        <div class="msg user reveal"><span class="who h">Human architect:</span>Event ingestion for 5k factory tools, on-prem, &lt;1s latency, small ops team.</div>
+        <div class="msg indent reveal"><span class="who perf">Agent 1 &middot; LLM A:</span>Kafka &mdash; proven throughput, latency and audit tooling.</div>
+        <div class="msg indent reveal"><span class="who cost">Agent 2 &middot; LLM B:</span>Objection: Kafka is heavy for a small team. Consider NATS JetStream.</div>
+        <div class="msg indent reveal"><span class="who sec">Agent 3 &middot; LLM C:</span>Is the ops cost real? Kafka operators cut it a lot &mdash; source attached.</div>
+        <div class="msg final reveal"><span class="who ok">Chair agent &rarr; Proposal:</span><strong>Kafka (managed operator)</strong>, consensus reached, dissent recorded.</div>
+      </div>
+      <div class="cards">
+        <div class="card reveal"><h3>Architect agents</h3><p><strong>&ge;3 agents</strong>, each on a <strong>different LLM</strong>.</p></div>
+        <div class="card reveal"><h3>Chair agent</h3><p>Drives the debate to <strong>consensus</strong> and writes the proposal.</p></div>
+        <div class="card reveal"><h3>Human architect</h3><p>Sets requirements, reviews, <strong>makes the final decision</strong>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PILLARS -->
+  <section class="slide" id="slide-4">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Core requirements</p>
+      <h1 class="slide-title reveal">Three pillars every team must deliver</h1>
+      <div class="cards">
+        <div class="card reveal"><div class="stat">1</div><h3>Diverse Council</h3><p>Peer architect agents, each on a <strong>different LLM</strong> with a distinct stance.</p></div>
+        <div class="card reveal"><div class="stat">2</div><h3>Debate &amp; Consensus</h3><p>Agents <strong>talk to each other</strong>, challenge, converge on one proposal.</p></div>
+        <div class="card reveal"><div class="stat">3</div><h3>Feedback Loop</h3><p>Architect feedback makes later decisions <strong>measurably more accurate</strong>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENT POOL -->
+  <section class="slide" id="slide-5">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Pillar 1</p>
+      <h1 class="slide-title reveal">The council: peer architects, different minds</h1>
+      <div class="compare reveal">
+        <div class="col good"><h3>Common to all agents</h3>
+          <ul>
+            <li>Full <strong>architect</strong> mandate &mdash; not a specialist</li>
+            <li>Same question, same knowledge base</li>
+            <li>Same output contract (options, trade-offs, confidence)</li>
+          </ul></div>
+        <div class="col mid"><h3>Different for each agent</h3>
+          <ul>
+            <li><strong>LLM</strong> &mdash; &ge;3 model families (mandatory)</li>
+            <li><strong>Stance</strong> &mdash; temperament &amp; priorities (recommended)</li>
+            <li>Optional: temperature, reasoning depth</li>
+          </ul></div>
+      </div>
+      <p class="note reveal"><strong>Why both?</strong> Different LLMs often still agree too quickly. Stances force real <strong>divergence</strong> before consensus.</p>
+    </div>
+  </section>
+
+  <!-- STANCES -->
+  <section class="slide" id="slide-6">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Pillar 1 &mdash; suggested stances</p>
+      <h1 class="slide-title reveal">Architect Agents: same job, different temperaments</h1>
+      <div class="crit">
+        <div class="c reveal"><h3>&#9881; Pragmatist</h3><p>Simplest thing that works. Values <strong>time-to-market</strong> and team skills.</p></div>
+        <div class="c reveal"><h3>&#128737; Guardian</h3><p>Risk-averse. Values <strong>proven tech</strong>, reliability, security.</p></div>
+        <div class="c reveal"><h3>&#128640; Innovator</h3><p>Future-proof. Values <strong>evolvability</strong> and modern options.</p></div>
+        <div class="c reveal"><h3>&#129488; Skeptic</h3><p>Challenges every claim. Demands <strong>evidence</strong> and hidden costs.</p></div>
+      </div>
+      <p class="note reveal"><strong>Rules for the agents:</strong> reach own conclusion alone first &bull; then share and debate &bull; change mind only for an argument &mdash; see next slide.</p>
+    </div>
+  </section>
+
+  <!-- DEBATE PROTOCOL -->
+  <section class="slide" id="slide-7">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Pillar 2</p>
+      <h1 class="slide-title reveal">Debate protocol: from opinions to a proposal</h1>
+      <div class="flow reveal">
+        <div class="flow-step">Frame<span>chair sets context &amp; QA scenarios</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Propose<span>each agent alone, no peeking</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step hl">Critique &amp; revise<span>challenge, update or defend</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Converge<span>vote / score / consensus</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Decide<span>ADR + dissent</span></div>
+      </div>
+      <ul class="bullets">
+        <li class="reveal"><strong>Think alone, then debate</strong> &mdash; LLMs tend to agree with whoever they talk to. Collaborating from the start gives instant, shallow agreement.</li>
+        <li class="reveal"><strong>Bounded rounds</strong> &mdash; debate must always terminate.</li>
+        <li class="reveal"><strong>Deadlock</strong> &mdash; chair tie-break or escalate to the human.</li>
+        <li class="reveal"><strong>Keep the minority view</strong> &mdash; dissent is part of the output.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- A2A COMMUNICATION -->
+  <section class="slide" id="slide-8">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Pillar 2 &mdash; communication</p>
+      <h1 class="slide-title reveal">Your architecture, your choice &mdash; within the rules</h1>
+      <div class="compare reveal">
+        <div class="col good"><h3>Free to explore (examples)</h3>
+          <ul>
+            <li>Any <strong>agentic pattern</strong>: orchestrator, peer-to-peer, hierarchical&hellip;</li>
+            <li>Blackboard / shared memory</li>
+            <li>Pub/sub message bus</li>
+            <li>Protocols: <strong>A2A</strong>, <strong>MCP</strong> for tools</li>
+          </ul></div>
+        <div class="col mid"><h3>Must be (non-negotiable)</h3>
+          <ul>
+            <li><strong>Structured</strong> &mdash; typed message schema</li>
+            <li><strong>Observable</strong> &mdash; visible live in the demo</li>
+            <li><strong>Traceable</strong> &mdash; who said what, based on what</li>
+            <li><strong>Swappable</strong> &mdash; add an agent without rewrites</li>
+          </ul></div>
+      </div>
+      <p class="note reveal"><strong>Maximum freedom</strong> on patterns and topology, as long as every "must be" holds. Justify choices in <strong>ADRs</strong>.</p>
+    </div>
+  </section>
+
+  <!-- KNOWLEDGE -->
+  <section class="slide" id="slide-9">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Grounding</p>
+      <h1 class="slide-title reveal">Knowledge: arguments must cite evidence</h1>
+      <div class="compare reveal">
+        <div class="col good"><h3>Possible sources</h3>
+          <ul>
+            <li>Patterns &amp; tactics catalogs</li>
+            <li>ISO/IEC 25010 quality model</li>
+            <li>Technology radars &amp; vendor docs</li>
+            <li>Past ADRs &amp; org principles</li>
+          </ul></div>
+        <div class="col mid"><h3>Design questions</h3>
+          <ul>
+            <li>Vector store, knowledge graph, or both?</li>
+            <li>How is <strong>provenance</strong> tracked?</li>
+            <li>Same KB for every LLM &mdash; <strong>fair debate</strong>?</li>
+            <li>How does knowledge stay <strong>fresh</strong>?</li>
+          </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK LOOP -->
+  <section class="slide" id="slide-10">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Pillar 3</p>
+      <h1 class="slide-title reveal">Feedback loop: the human decides, the council learns</h1>
+      <div class="flow reveal">
+        <div class="flow-step">Council proposes</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step hl">Human reviews<span>feedback + why</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Council revises<span>next iteration</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step hl">Human decides<span>final decision</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Agents learn<span>for future decisions</span></div>
+      </div>
+      <div class="compare reveal">
+        <div class="col good"><h3>Short loop: one decision</h3><p>Human feedback is used <strong>in the next debate round</strong> to improve the current proposal.</p></div>
+        <div class="col mid"><h3>Long loop: all future decisions</h3><p>The <strong>final human decision</strong> is stored and teaches the agents (e.g. memory, principles, per-model trust).</p></div>
+      </div>
+      <p class="note reveal"><strong>Goal:</strong> later decisions match the human's final choice more often &mdash; measured on slide 12.</p>
+    </div>
+  </section>
+
+  <!-- BASELINE -->
+  <section class="slide" id="slide-11">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Evaluation &mdash; experiment A</p>
+      <h1 class="slide-title reveal">Council vs. baseline: is agentic worth it?</h1>
+      <div class="compare reveal">
+        <div class="col bad"><h3>Baseline</h3>
+          <p>Each council LLM <strong>alone</strong>, single prompt, no agents.</p>
+          <ul><li>No debate, no roles</li><li>No memory, no feedback loop</li></ul></div>
+        <div class="col good"><h3>Architect Council</h3>
+          <p>Your <strong>full multi-agent</strong> system.</p>
+          <ul><li>Debate, consensus, dissent</li><li>Knowledge + feedback loop</li></ul></div>
+      </div>
+      <ul class="bullets">
+        <li class="reveal"><strong>Beat the best single model</strong> &mdash; same scenarios, same LLMs.</li>
+        <li class="reveal"><strong>Measure</strong> accuracy, trade-off coverage, citations, cost, latency.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FEEDBACK EXPERIMENT -->
+  <section class="slide" id="slide-12">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Evaluation &mdash; experiment B</p>
+      <h1 class="slide-title reveal">Prove decisions get more accurate after feedback</h1>
+      <div class="flow reveal">
+        <div class="flow-step">Benchmark<span>20+ scenarios with expert answers</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Split<span>feedback set / held-out test set</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Score before<span>on test set</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Feedback rounds<span>on feedback set only</span></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step hl">Score after<span>on same test set</span></div>
+      </div>
+      <ul class="bullets">
+        <li class="reveal"><strong>Never test on feedback scenarios</strong> &mdash; that's memorization, not learning.</li>
+        <li class="reveal"><strong>Show the learning curve</strong> across iterations.</li>
+        <li class="reveal"><strong>LLM-as-judge</strong> only if calibrated against human ratings.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DELIVERABLES -->
+  <section class="slide" id="slide-13">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">What you hand in</p>
+      <h1 class="slide-title reveal">Six deliverables</h1>
+      <div class="cards">
+        <div class="card reveal"><h3>&#9881; Working council</h3><p>Runnable multi-agent system + baseline.</p></div>
+        <div class="card reveal"><h3>&#128208; Architecture doc</h3><p>Software Architecture of the agent system.</p></div>
+        <div class="card reveal"><h3>&#128221; ADRs</h3><p>Roles, protocol, consensus, learning lever.</p></div>
+      </div>
+      <div class="cards">
+        <div class="card reveal"><h3>&#128202; Evaluation report</h3><p>Experiments A &amp; B with data.</p></div>
+        <div class="card reveal"><h3>&#128187; Source repo</h3><p>Clean history, README, setup in <strong>&lt;10 min</strong>.</p></div>
+        <div class="card reveal"><h3>&#127908; Live demo</h3><p>Agents debating live + architecture defense.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSESSMENT -->
+  <section class="slide" id="slide-14">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Assessment</p>
+      <h1 class="slide-title reveal">How your project is evaluated</h1>
+      <div class="crit">
+        <div class="c reveal"><h3><span class="n">1</span>Agentic software architecture</h3><p>Model diversity, communication, consensus &mdash; well designed and <strong>justified by ADRs</strong>.</p></div>
+        <div class="c reveal"><h3><span class="n">2</span>Live agent-to-agent demo</h3><p>Agents visibly <strong>message, challenge and agree</strong> in real time.</p></div>
+        <div class="c reveal"><h3><span class="n">3</span>Feedback loop</h3><p>Decisions after feedback are <strong>demonstrably more accurate</strong>.</p></div>
+        <div class="c reveal"><h3><span class="n">4</span>Agentic vs. baseline</h3><p>Evidence the council beats <strong>AI without agents</strong> &mdash; or honest analysis why not.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="slide divider" id="slide-15">
+    <span class="tag">Software Architecture 2026/27</span>
+    <div class="slide-inner">
+      <h2 class="reveal">Build the architecture board you'd want to sit on</h2>
+      <p class="subtitle reveal">Questions &amp; discussion</p>
+    </div>
+  </section>
+</div>
+
+<script>
+var deck=document.getElementById('deck');
+var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var nav=document.getElementById('slideNav');
+var progress=document.getElementById('progress');
+
+slides.forEach(function(s,i){
+  var a=document.createElement('a');a.href='#'+s.id;a.title='Slide '+(i+1);nav.appendChild(a);
+  if(!s.classList.contains('title')&&!s.classList.contains('divider')){
+    var n=document.createElement('div');n.className='slide-number';n.textContent=(i+1)+' / '+slides.length;
+    n.style.position='absolute';n.style.bottom='18px';n.style.right='24px';s.appendChild(n);
+  }
+});
+var dots=Array.prototype.slice.call(nav.children);
+
+function scaleSlides(){
+  document.querySelectorAll('.slide-inner').forEach(function(inner){
+    inner.style.transform='none';
+    var slideH=inner.parentElement.clientHeight*0.9;
+    var contentH=inner.scrollHeight;
+    if(contentH>slideH){inner.style.transform='scale('+Math.max(0.82,slideH/contentH)+')';}
+  });
+}
+window.addEventListener('load',scaleSlides);
+window.addEventListener('resize',scaleSlides);
+
+var cur=0;
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    var i=slides.indexOf(e.target);
+    if(e.isIntersecting){
+      cur=i;
+      dots.forEach(function(d){d.classList.remove('active');});
+      if(dots[i]){dots[i].classList.add('active');}
+      e.target.querySelectorAll('.reveal').forEach(function(el,k){setTimeout(function(){el.classList.add('in');},k*90);});
+    }
+  });
+},{threshold:.5});
+slides.forEach(function(s){io.observe(s);});
+
+deck.addEventListener('scroll',function(){
+  progress.style.width=(deck.scrollTop/(deck.scrollHeight-deck.clientHeight)*100)+'%';
+});
+
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides[cur].scrollIntoView({behavior:'smooth'});}
+window.addEventListener('keydown',function(e){
+  if(['ArrowDown','ArrowRight',' ','PageDown'].indexOf(e.key)>-1){e.preventDefault();go(cur+1);}
+  if(['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();go(cur-1);}
+});
+
+document.getElementById('fsBtn').addEventListener('click',function(){
+  if(document.fullscreenElement){document.exitFullscreen();}else{document.documentElement.requestFullscreen();}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+[
+  {
+    "id": "SCEN-01",
+    "title": "Cleanroom Factory Tool Event Ingestion (5k Tools)",
+    "split": "feedback",
+    "domain": "Semiconductor Manufacturing (Fab Telemetry)",
+    "prompt": "Event ingestion for 5,000 wafer fabrication factory tools, strictly on-premise deployment, <1s end-to-end latency for anomaly detection, maintained by a small 3-person ops team.",
+    "quality_attributes": ["latency", "operability", "reliability", "cost"],
+    "constraints": ["on-prem", "small-team", "<1s latency", "5k tools (~50k events/sec)"],
+    "options": [
+      "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+      "Raw Self-Managed Apache Kafka + ZooKeeper + Flink Cluster",
+      "AWS Kinesis Data Streams + Cloud Lambda Bridge"
+    ],
+    "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+    "acceptable_secondary": "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+    "expert_rationale": "With a 3-person ops team on-prem and 50k events/sec (<1s latency), NATS JetStream or Redpanda provides single-binary simplicity without JVM tuning, while Strimzi Kafka is acceptable if Kubernetes is already mature. Raw Kafka+ZK is too heavy, and AWS Kinesis violates on-prem data sovereignty.",
+    "key_kb_ids": ["KB-PAT-01", "KB-PAT-02", "KB-ADR-01", "KB-ADR-02"]
+  },
+  {
+    "id": "SCEN-02",
+    "title": "Wafer Metrology Time-Series Storage & Relational Defect Joins",
+    "split": "feedback",
+    "domain": "Semiconductor Yield Analytics",
+    "prompt": "Store 80,000 sensor metrics/sec from metrology stations on-premise and frequently join them with relational lot/wafer metadata in PostgreSQL. Ops team of 4 engineers already knows PostgreSQL deeply.",
+    "quality_attributes": ["operability", "query-performance", "maintainability", "storage-efficiency"],
+    "constraints": ["small-team", "on-prem", "relational-joins", "80k metrics/sec"],
+    "options": [
+      "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+      "ClickHouse Cluster + Separate PostgreSQL + Debezium Sync",
+      "Apache Cassandra + Apache Spark Cluster",
+      "InfluxDB v1 Custom Sharded Cluster"
+    ],
+    "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+    "acceptable_secondary": "ClickHouse Cluster + Separate PostgreSQL + Debezium Sync",
+    "expert_rationale": "At 80k metrics/sec with heavy relational metadata joins and a 4-person PostgreSQL-skilled team, TimescaleDB satisfies throughput while keeping a single database engine and zero cross-DB sync pipelines.",
+    "key_kb_ids": ["KB-PAT-07", "KB-ISO-04", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-03",
+    "title": "B2B Equipment Spare-Parts Portal Modernization",
+    "split": "feedback",
+    "domain": "Enterprise Supply Chain",
+    "prompt": "Build a new B2B spare-parts ordering and inventory portal for 2,000 concurrent users. Team of 5 full-stack developers, 4-month deadline, evolving domain boundaries, no dedicated SRE.",
+    "quality_attributes": ["time-to-market", "maintainability", "simplicity", "modifiability"],
+    "constraints": ["small-team", "tight-deadline", "no-dedicated-sre", "2k concurrent users"],
+    "options": [
+      "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+      "12 Fine-Grained Microservices with Istio Service Mesh & Polyglot DBs",
+      "Serverless Nano-Functions (80+ Lambdas) with DynamoDB",
+      "Event-Sourced CQRS Distributed Cluster with Axon Server"
+    ],
+    "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+    "acceptable_secondary": "Serverless Nano-Functions (80+ Lambdas) with DynamoDB",
+    "expert_rationale": "For a 5-developer team with no SRE and a 4-month deadline, a Modular Monolith avoids distributed systems tax while enforcing module boundaries for future extraction.",
+    "key_kb_ids": ["KB-PAT-03", "KB-ISO-04", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-04",
+    "title": "Multi-Step Wafer Lot Hold & Calibration Workflow",
+    "split": "feedback",
+    "domain": "Manufacturing Execution System (MES)",
+    "prompt": "Coordinate an 8-step automated workflow when a wafer lot fails inline inspection (pause tool, quarantine lot, schedule calibration, notify engineer, run test wafer, compensating rollback on timeout). Full audit visibility required.",
+    "quality_attributes": ["reliability", "observability", "auditability", "consistency"],
+    "constraints": ["8-step workflow", "long-running timeouts", "compensating actions", "strict audit"],
+    "options": [
+      "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+      "Pure Event Choreography across 8 Services via Pub/Sub Topics",
+      "Distributed Two-Phase Commit (2PC/XA) across All 8 Systems",
+      "Cron-Job Batch Polling Script every 15 Minutes"
+    ],
+    "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+    "acceptable_secondary": "Pure Event Choreography across 8 Services via Pub/Sub Topics",
+    "expert_rationale": "For an 8-step workflow with timeouts and compensating rollbacks, an Orchestrated Saga (Temporal/State Machine) prevents cyclic event spaghetti and gives a centralized audit trail.",
+    "key_kb_ids": ["KB-PAT-06", "KB-ISO-02", "KB-ISO-03"]
+  },
+  {
+    "id": "SCEN-05",
+    "title": "Remote Assembly Sub-Plant Telemetry over Unreliable WAN",
+    "split": "feedback",
+    "domain": "Industrial Edge & Multi-Site Manufacturing",
+    "prompt": "Collect high-frequency packaging machine telemetry from a remote assembly site whose WAN link to central HQ drops for 2-4 hours during storms. Zero data loss and local sub-second safety alerts required.",
+    "quality_attributes": ["availability", "fault-tolerance", "latency", "reliability"],
+    "constraints": ["unreliable-wan", "zero-data-loss", "local-alerting", "on-prem"],
+    "options": [
+      "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+      "Direct Synchronous REST Calls from Machines to Central HQ Cloud",
+      "Remote Kafka Producers writing directly over WAN with large RAM buffers",
+      "Nightly FTP CSV Batch Upload"
+    ],
+    "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+    "acceptable_secondary": "Remote Kafka Producers writing directly over WAN with large RAM buffers",
+    "expert_rationale": "An Edge-First Store-and-Forward Gateway processes local safety alerts in <1s and persists data to local disk during 4-hour WAN outages, syncing asynchronously upon reconnection.",
+    "key_kb_ids": ["KB-PAT-08", "KB-ISO-02", "KB-ADR-02"]
+  },
+  {
+    "id": "SCEN-06",
+    "title": "Dual-Write Consistency between Order DB and Notification Broker",
+    "split": "feedback",
+    "domain": "Enterprise Order Processing",
+    "prompt": "Ensure that whenever a customer order status is updated in PostgreSQL, an event is reliably published to the message broker without losing messages on process crash. Team of 3 backend devs wants minimal extra infrastructure.",
+    "quality_attributes": ["consistency", "reliability", "operability", "simplicity"],
+    "constraints": ["small-team", "postgresql", "no-lost-messages", "minimal-infra"],
+    "options": [
+      "Transactional Outbox Table with Lightweight Polling Publisher",
+      "Transactional Outbox with Full Debezium + Kafka Connect Cluster",
+      "Dual Write in Application Code (DB commit then Broker publish)",
+      "Distributed XA Transaction across PostgreSQL and Broker"
+    ],
+    "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+    "acceptable_secondary": "Transactional Outbox with Full Debezium + Kafka Connect Cluster",
+    "expert_rationale": "Transactional Outbox with a lightweight Polling Publisher guarantees at-least-once consistency using only PostgreSQL, avoiding the operational burden of running a Debezium + Kafka Connect cluster for a 3-person team.",
+    "key_kb_ids": ["KB-TAC-01", "KB-ISO-04", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-07",
+    "title": "Legacy 20-Year-Old Factory ERP Displacement",
+    "split": "feedback",
+    "domain": "Legacy Modernization",
+    "prompt": "Replace a monolithic 20-year-old legacy ERP system handling live factory inventory. Zero downtime allowed during the 18-month transition; cannot freeze new feature delivery.",
+    "quality_attributes": ["modifiability", "availability", "risk-mitigation", "evolvability"],
+    "constraints": ["zero-downtime", "18-month migration", "live-production"],
+    "options": [
+      "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+      "Big-Bang Rewrite from Scratch with Weekend Cutover",
+      "Shared Database Direct Table Mutation between Legacy and New Apps",
+      " Lift-and-Shift Legacy Binary into 50 Containers without Code Changes"
+    ],
+    "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+    "acceptable_secondary": "Shared Database Direct Table Mutation between Legacy and New Apps",
+    "expert_rationale": "Strangler Fig with an Anti-Corruption Layer migrates vertical slices incrementally behind a routing proxy, eliminating Big-Bang cutover risk while isolating the new domain model from legacy schema pollution.",
+    "key_kb_ids": ["KB-TAC-04", "KB-ISO-04", "KB-ISO-02"]
+  },
+  {
+    "id": "SCEN-08",
+    "title": "Internal Internal-Tooling API Security for 4 Services",
+    "split": "feedback",
+    "domain": "Platform Security",
+    "prompt": "Secure an internal engineering dashboard backed by 4 backend services in a single private Kubernetes namespace. Managed by 2 developers; needs strong authentication and RBAC without heavy infrastructure.",
+    "quality_attributes": ["security", "operability", "simplicity", "maintainability"],
+    "constraints": ["small-team", "4 services", "internal-dashboard", "rbac"],
+    "options": [
+      "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+      "Full Istio Service Mesh + SPIFFE/SPIRE Federation + Custom Envoy WASM Filters",
+      "Hardcoded Shared Static API Keys in Source Code",
+      "Custom Hand-Rolled Cryptography Protocol over Raw TCP"
+    ],
+    "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+    "acceptable_secondary": "Full Istio Service Mesh + SPIFFE/SPIRE Federation + Custom Envoy WASM Filters",
+    "expert_rationale": "For 4 services and 2 developers, OIDC/OAuth2 JWT validation at the ingress gateway plus Kubernetes NetworkPolicies achieves strong security without the upgrade and debugging overhead of a full service mesh.",
+    "key_kb_ids": ["KB-TAC-03", "KB-ADR-01", "KB-ISO-03"]
+  },
+  {
+    "id": "SCEN-09",
+    "title": "Regulatory Semiconductor Chemical Audit Ledger",
+    "split": "feedback",
+    "domain": "Compliance & Safety Systems",
+    "prompt": "Track every hazardous chemical canister movement across cleanrooms for EPA/ISO regulatory audits. Requires tamper-evident history of every state transition, who approved it, and point-in-time state reconstruction. Throughput is modest (50 events/min).",
+    "quality_attributes": ["auditability", "integrity", "security", "reliability"],
+    "constraints": ["regulatory-audit", "tamper-evident", "temporal-reconstruction", "50 events/min"],
+    "options": [
+      "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+      "Standard CRUD Overwrite Table with Last-Modified Timestamp",
+      "Public Permissionless Blockchain (Ethereum Mainnet Smart Contracts)",
+      "In-Memory Redis Cache with Periodic Snapshot"
+    ],
+    "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+    "acceptable_secondary": "Standard CRUD Overwrite Table with Last-Modified Timestamp",
+    "expert_rationale": "Event Sourcing with an append-only hash-chained table in PostgreSQL provides immutable auditability and temporal state reconstruction without external blockchain latency or CRUD state-overwrite loss.",
+    "key_kb_ids": ["KB-PAT-05", "KB-ISO-03", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-10",
+    "title": "Protection Against Slow Third-Party Carrier Shipping API",
+    "split": "feedback",
+    "domain": "Logistics Integration",
+    "prompt": "Our checkout/dispatch service calls 3 external freight carrier REST APIs. When one carrier's API degrades to 30s response times, it exhausts all worker threads and crashes our entire dispatch service.",
+    "quality_attributes": ["availability", "fault-tolerance", "resilience", "latency"],
+    "constraints": ["unreliable-third-party", "prevent-cascading-failure", "fast-recovery"],
+    "options": [
+      "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+      "Increase Global HTTP Timeout to 120 Seconds and Double Thread Pool",
+      "Rewrite Entire Dispatch System in Assembly",
+      "Synchronous Retry Loop (10 Immediate Retries on Failure)"
+    ],
+    "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+    "acceptable_secondary": "Increase Global HTTP Timeout to 120 Seconds and Double Thread Pool",
+    "expert_rationale": "Bulkhead isolation ensures one slow carrier can only saturate its dedicated pool, while a Circuit Breaker trips fast and routes requests to an async retry queue.",
+    "key_kb_ids": ["KB-TAC-02", "KB-ISO-02"]
+  },
+  {
+    "id": "SCEN-11",
+    "title": "Global Multi-Fab Read-Heavy Equipment Catalog",
+    "split": "feedback",
+    "domain": "Enterprise Knowledge & Catalog",
+    "prompt": "Serve a read-heavy equipment calibration specification catalog (99.5% reads, 0.5% writes, <50ms read latency) to engineers across 3 fabs, managed by a 3-person team.",
+    "quality_attributes": ["latency", "operability", "read-scalability", "simplicity"],
+    "constraints": ["99.5% reads", "<50ms latency", "small-team"],
+    "options": [
+      "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+      "Full Event-Sourced Multi-Cluster Cassandra with Custom Paxos Engine",
+      "Single Unindexed CSV File on Shared Network Drive",
+      "Multi-Master Write-Everywhere Spanner Clone Self-Hosted"
+    ],
+    "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+    "acceptable_secondary": "Full Event-Sourced Multi-Cluster Cassandra with Custom Paxos Engine",
+    "expert_rationale": "For a 99.5% read workload and a 3-person team, PostgreSQL with Read Replicas and Cache-Aside Redis delivers <10ms reads with minimal operational complexity.",
+    "key_kb_ids": ["KB-PAT-05", "KB-ISO-01", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-12",
+    "title": "Large-Scale Autonomous Org (120 Engineers, 15 Domain Teams)",
+    "split": "feedback",
+    "domain": "Global Enterprise Platform",
+    "prompt": "Scale an enterprise manufacturing analytics platform built by 120 engineers organized into 15 autonomous domain teams with dedicated platform SREs. Teams are blocked by release train conflicts on a shared monolith.",
+    "quality_attributes": ["independent-deployability", "scalability", "fault-isolation", "evolvability"],
+    "constraints": ["120 engineers", "15 teams", "dedicated-platform-sre", "independent-releases"],
+    "options": [
+      "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+      "Keep Single Shared Monolith with Weekly Manual Merge Freeze",
+      "Shared Single Database with 15 Uncoordinated Apps Mutating Tables",
+      "No-Code Spreadsheet Macros"
+    ],
+    "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+    "acceptable_secondary": "Keep Single Shared Monolith with Weekly Manual Merge Freeze",
+    "expert_rationale": "With 120 engineers across 15 teams and dedicated Platform SREs, Conway's Law and release autonomy justify domain-aligned microservices with contract testing.",
+    "key_kb_ids": ["KB-PAT-04", "KB-ISO-04"]
+  },
+  {
+    "id": "SCEN-13",
+    "title": "Packaging Line Vision Inspection Event Stream (3k Cameras)",
+    "split": "test",
+    "domain": "Semiconductor Packaging & Test",
+    "prompt": "Ingest defect alert events from 3,000 high-speed optical inspection cameras on-premise with <500ms alerting latency. Managed by a lean 3-person factory IT team with no dedicated Kafka specialists.",
+    "quality_attributes": ["latency", "operability", "reliability", "simplicity"],
+    "constraints": ["on-prem", "small-team", "<500ms latency", "3k cameras"],
+    "options": [
+      "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+      "Raw Self-Managed Apache Kafka + ZooKeeper + Storm Cluster",
+      "Public Cloud Google Pub/Sub over Internet"
+    ],
+    "expert_choice": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+    "acceptable_secondary": "Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)",
+    "expert_rationale": "Mirrors the operational proportionality and on-prem sub-second latency principles: NATS JetStream or Redpanda avoids JVM/ZooKeeper complexity for a 3-person factory IT team while guaranteeing <500ms on-prem delivery.",
+    "key_kb_ids": ["KB-PAT-01", "KB-ADR-01", "KB-ADR-02"]
+  },
+  {
+    "id": "SCEN-14",
+    "title": "Cleanroom Environmental Sensor Archive & SQL Reporting",
+    "split": "test",
+    "domain": "Facilities & Cleanroom Monitoring",
+    "prompt": "Store 50,000 particle, temperature, and humidity readings/sec on-prem and join them with cleanroom zone and maintenance schedules stored in PostgreSQL. Maintained by a 3-person ops team.",
+    "quality_attributes": ["operability", "query-performance", "maintainability", "cost"],
+    "constraints": ["on-prem", "small-team", "postgresql-joins", "50k metrics/sec"],
+    "options": [
+      "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+      "ClickHouse + Separate PostgreSQL + Custom ETL Sync",
+      "Hadoop HDFS + Apache HBase + MapReduce",
+      "Plain Unpartitioned SQLite File"
+    ],
+    "expert_choice": "TimescaleDB (PostgreSQL Hypertables + Native Compression)",
+    "acceptable_secondary": "ClickHouse + Separate PostgreSQL + Custom ETL Sync",
+    "expert_rationale": "At 50k readings/sec with relational joins and a 3-person ops team, TimescaleDB provides time-series compression and native SQL joins in a single PostgreSQL footprint.",
+    "key_kb_ids": ["KB-PAT-07", "KB-ADR-01", "KB-ISO-04"]
+  },
+  {
+    "id": "SCEN-15",
+    "title": "Internal Calibration Scheduling & Technician Portal",
+    "split": "test",
+    "domain": "Factory Operations Software",
+    "prompt": "Build an internal web application for scheduling tool calibrations and tracking technician checklists (800 daily active users). Team of 4 developers, 3-month delivery target, no platform ops team.",
+    "quality_attributes": ["time-to-market", "maintainability", "simplicity", "operability"],
+    "constraints": ["small-team", "3-month deadline", "800 users", "no-ops-team"],
+    "options": [
+      "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+      "10 Microservices with Kubernetes Service Mesh & gRPC",
+      "Distributed Actor Cluster with Custom Consensus",
+      "Event-Sourced CQRS with 5 Separate Broker Clusters"
+    ],
+    "expert_choice": "Modular Monolith with Explicit Domain Boundaries & Single PostgreSQL",
+    "acceptable_secondary": "10 Microservices with Kubernetes Service Mesh & gRPC",
+    "expert_rationale": "For 4 developers, 800 users, and a 3-month deadline with no ops team, a Modular Monolith maximizes delivery velocity and minimizes operational burden.",
+    "key_kb_ids": ["KB-PAT-03", "KB-ADR-01", "KB-ISO-04"]
+  },
+  {
+    "id": "SCEN-16",
+    "title": "Automated Reticle Mask Qualification Pipeline (7 Steps)",
+    "split": "test",
+    "domain": "Photolithography Automation",
+    "prompt": "Coordinate a 7-step automated reticle qualification pipeline across inspection, pellicle check, recipe verification, and stocker reservation, with automatic compensation if any verification step fails or times out.",
+    "quality_attributes": ["reliability", "observability", "consistency", "auditability"],
+    "constraints": ["7-step pipeline", "compensating-rollback", "timeout-handling"],
+    "options": [
+      "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+      "Ad-hoc Peer-to-Peer Event Choreography across 7 Services",
+      "Blocking Synchronous Distributed XA Transactions",
+      "Manual Email Handoffs with Shell Scripts"
+    ],
+    "expert_choice": "Orchestrated Saga via Durable Workflow Engine (Temporal / State Machine)",
+    "acceptable_secondary": "Ad-hoc Peer-to-Peer Event Choreography across 7 Services",
+    "expert_rationale": "A 7-step workflow with timeouts and rollback compensation requires centralized Saga Orchestration to avoid unmaintainable event choreography loops.",
+    "key_kb_ids": ["KB-PAT-06", "KB-ISO-02"]
+  },
+  {
+    "id": "SCEN-17",
+    "title": "Offshore Test Facility Telemetry with Intermittent Subsea Link",
+    "split": "test",
+    "domain": "Global Manufacturing Edge",
+    "prompt": "Collect tester machine logs and trigger local overheat shutdowns (<200ms) at an offshore test facility whose WAN connection to central headquarters experiences frequent 1-hour disconnects.",
+    "quality_attributes": ["availability", "latency", "fault-tolerance", "reliability"],
+    "constraints": ["intermittent-wan", "<200ms local control", "zero-data-loss"],
+    "options": [
+      "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+      "Cloud-Only Streaming with Synchronous HTTP POST over WAN",
+      "Centralized Cloud Rule Engine Polling Machines over VPN",
+      "Weekly USB Drive Physical Shipment"
+    ],
+    "expert_choice": "Edge-First Store-and-Forward Gateway (Local NATS Leaf / SQLite Buffer)",
+    "acceptable_secondary": "Cloud-Only Streaming with Synchronous HTTP POST over WAN",
+    "expert_rationale": "Local sub-200ms control loops and 1-hour WAN disconnects require an Edge-First Store-and-Forward Gateway with local rule evaluation and persistent disk buffering.",
+    "key_kb_ids": ["KB-PAT-08", "KB-ADR-02", "KB-ISO-02"]
+  },
+  {
+    "id": "SCEN-18",
+    "title": "Reliable Shipment Event Publication from PostgreSQL ERP",
+    "split": "test",
+    "domain": "Supply Chain Integration",
+    "prompt": "Guarantee that every committed shipment record in PostgreSQL emits an event to the internal broker without dual-write inconsistencies. Maintained by a 4-person dev team wanting minimal operational moving parts.",
+    "quality_attributes": ["consistency", "operability", "reliability", "simplicity"],
+    "constraints": ["small-team", "postgresql", "transactional-consistency", "minimal-ops"],
+    "options": [
+      "Transactional Outbox Table with Lightweight Polling Publisher",
+      "Transactional Outbox with Full Debezium + Kafka Connect Cluster",
+      "Best-Effort In-Memory Async Fire-and-Forget after DB Commit",
+      "Two-Phase Commit (2PC) across DB and Broker"
+    ],
+    "expert_choice": "Transactional Outbox Table with Lightweight Polling Publisher",
+    "acceptable_secondary": "Transactional Outbox with Full Debezium + Kafka Connect Cluster",
+    "expert_rationale": "A Transactional Outbox with a lightweight Polling Publisher guarantees transactional event delivery without requiring the 4-person team to operate Debezium and Kafka Connect.",
+    "key_kb_ids": ["KB-TAC-01", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-19",
+    "title": "Incremental Replacement of Monolithic Factory Dispatch System",
+    "split": "test",
+    "domain": "MES Modernization",
+    "prompt": "Gradually modernize a mission-critical 15-year-old factory dispatch system over 12 months with zero cleanroom downtime and strict protection of the new domain model from legacy table schemas.",
+    "quality_attributes": ["modifiability", "availability", "risk-mitigation", "evolvability"],
+    "constraints": ["zero-downtime", "12-month transition", "clean-domain-model"],
+    "options": [
+      "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+      "12-Month Feature Freeze & Big-Bang Cutover",
+      "Direct Bi-Directional Database Triggers Mutating Legacy Tables",
+      "Decompile Legacy Binary and Auto-Transpile to Microservices"
+    ],
+    "expert_choice": "Strangler Fig Pattern with Routing Facade & Anti-Corruption Layer (ACL)",
+    "acceptable_secondary": "Direct Bi-Directional Database Triggers Mutating Legacy Tables",
+    "expert_rationale": "Strangler Fig with a Routing Facade and ACL enables low-risk vertical slice migration while keeping the new domain model decoupled from legacy schemas.",
+    "key_kb_ids": ["KB-TAC-04", "KB-ISO-04"]
+  },
+  {
+    "id": "SCEN-20",
+    "title": "Authentication & Authorization for 3 Internal Analytics APIs",
+    "split": "test",
+    "domain": "Internal Platform Security",
+    "prompt": "Secure 3 internal yield-reporting REST services deployed in a single Kubernetes cluster and maintained by a 3-person team. Needs corporate SSO integration and role-based access control.",
+    "quality_attributes": ["security", "operability", "simplicity", "maintainability"],
+    "constraints": ["small-team", "3 services", "corporate-sso", "rbac"],
+    "options": [
+      "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+      "Multi-Cluster Istio Service Mesh + SPIFFE/SPIRE + Custom HSM Sidecars",
+      "Unauthenticated Internal Endpoints (Trust Corporate LAN)",
+      "Custom Proprietary Token Encryption Scheme"
+    ],
+    "expert_choice": "API Gateway with OIDC/OAuth2 JWT Validation + K8s NetworkPolicies",
+    "acceptable_secondary": "Multi-Cluster Istio Service Mesh + SPIFFE/SPIRE + Custom HSM Sidecars",
+    "expert_rationale": "For 3 internal services and a 3-person team, OIDC/OAuth2 JWT validation at the API Gateway plus K8s NetworkPolicies provides strong security with low operational overhead.",
+    "key_kb_ids": ["KB-TAC-03", "KB-ADR-01", "KB-ISO-03"]
+  },
+  {
+    "id": "SCEN-21",
+    "title": "Export-Controlled Photomask Custody Chain Ledger",
+    "split": "test",
+    "domain": "Security & Regulatory Compliance",
+    "prompt": "Record every custody handoff of export-controlled photomasks with immutable non-repudiation, full historical audit replay, and cryptographic tamper detection (throughput: 20 events/min, 3-person team).",
+    "quality_attributes": ["auditability", "integrity", "security", "operability"],
+    "constraints": ["immutable-audit", "tamper-detection", "small-team", "20 events/min"],
+    "options": [
+      "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+      "Mutable SQL Table with UPDATE Statements",
+      "Self-Hosted 20-Node Hyperledger Fabric Consortium Cluster",
+      "Local Text Log Files on Application Server"
+    ],
+    "expert_choice": "Event Sourcing with Append-Only Cryptographically Chained Log in PostgreSQL",
+    "acceptable_secondary": "Self-Hosted 20-Node Hyperledger Fabric Consortium Cluster",
+    "expert_rationale": "Event Sourcing with an append-only hash-chained log in PostgreSQL meets strict tamper-evident audit requirements while staying operable for a 3-person team.",
+    "key_kb_ids": ["KB-PAT-05", "KB-ISO-03", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-22",
+    "title": "Isolating Flaky Legacy SAP RFC Integration in Order Service",
+    "split": "test",
+    "domain": "Enterprise Resilience",
+    "prompt": "Our order API calls a legacy SAP endpoint that periodically hangs for 45 seconds during batch runs, causing thread starvation and taking down unrelated read endpoints in our service.",
+    "quality_attributes": ["availability", "fault-tolerance", "resilience", "latency"],
+    "constraints": ["flaky-downstream", "prevent-thread-starvation", "fast-failover"],
+    "options": [
+      "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+      "Remove All Timeouts and Add 500 Worker Threads",
+      "Synchronous Blocking Retry Loop on Main Request Thread",
+      "Restart Kubernetes Pod Every 5 Minutes via Cron"
+    ],
+    "expert_choice": "Bulkhead Thread/Connection Pool Isolation + Circuit Breaker with Fallback Queue",
+    "acceptable_secondary": "Remove All Timeouts and Add 500 Worker Threads",
+    "expert_rationale": "Bulkhead pool isolation protects unrelated endpoints from thread starvation, while a Circuit Breaker with fallback queue handles SAP batch brownouts gracefully.",
+    "key_kb_ids": ["KB-TAC-02", "KB-ISO-02"]
+  },
+  {
+    "id": "SCEN-23",
+    "title": "Low-Latency Global Semiconductor Part-Number Lookup Service",
+    "split": "test",
+    "domain": "Catalog & Reference Data",
+    "prompt": "Serve a part-number specification lookup API (99% reads, 1% updates, <30ms p95 latency) used by 4,000 engineers, maintained by a 3-person backend team.",
+    "quality_attributes": ["latency", "operability", "read-scalability", "simplicity"],
+    "constraints": ["99% reads", "<30ms latency", "small-team"],
+    "options": [
+      "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+      "Custom Sharded ScyllaDB + Kafka + Elasticsearch + GraphDB",
+      "Single Uncached SQL Server with Complex 12-Table Joins on Every Read",
+      "Client-Side 50GB Full Database Download on Login"
+    ],
+    "expert_choice": "Primary PostgreSQL + Read Replicas + Cache-Aside Redis",
+    "acceptable_secondary": "Custom Sharded ScyllaDB + Kafka + Elasticsearch + GraphDB",
+    "expert_rationale": "PostgreSQL + Read Replicas + Cache-Aside Redis easily achieves <30ms read latency for a 99% read workload while respecting the 3-person team's operational capacity.",
+    "key_kb_ids": ["KB-PAT-05", "KB-ISO-01", "KB-ADR-01"]
+  },
+  {
+    "id": "SCEN-24",
+    "title": "Multi-Region Enterprise Engineering Platform (150 Devs, 18 Squads)",
+    "split": "test",
+    "domain": "Large-Scale Organization Architecture",
+    "prompt": "Architect a global R&D simulation & analytics platform developed by 150 engineers across 18 independent squads, backed by a dedicated 10-person Platform Engineering team. Squads need independent daily deployments.",
+    "quality_attributes": ["independent-deployability", "scalability", "fault-isolation", "evolvability"],
+    "constraints": ["150 engineers", "18 squads", "dedicated-platform-team", "daily-independent-deploys"],
+    "options": [
+      "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+      "Single Monolithic Codebase with Shared Global State",
+      "18 Services Sharing One Tightly Coupled Relational Schema",
+      "Manual FTP Deployment to Shared VM"
+    ],
+    "expert_choice": "Domain-Aligned Microservices with API Gateway, Contract Testing & Platform PaaS",
+    "acceptable_secondary": "18 Services Sharing One Tightly Coupled Relational Schema",
+    "expert_rationale": "With 150 developers in 18 squads and a dedicated 10-person Platform Engineering team, domain-aligned microservices with contract testing enable independent deployment velocity and fault isolation.",
+    "key_kb_ids": ["KB-PAT-04", "KB-ISO-04"]
+  }
+]
+
