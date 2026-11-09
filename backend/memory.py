@@ -8,7 +8,8 @@ from backend.config import settings
 
 class LongLoopMemory:
     """
-    Pillar 3 — Long-Loop Feedback & Learning Engine (Slide 10 & Slide 12).
+    Pillar 3 — Long-Loop Feedback & Learning Engine (Slide 10 & Slide 12)
+    with Hybrid Last_K + RAFG Context Strategy (Gupta et al., 2026 - 'Context Matters').
     Stores:
     1. Learned Organizational Principles extracted from Human Architect feedback.
     2. Episodic Memory of past human-validated architectural decisions.
@@ -73,20 +74,39 @@ class LongLoopMemory:
         quality_attributes: List[str] = None,
         constraints: List[str] = None,
         top_k: int = 5,
+        last_k: int = 3,
+        rafg_k: int = 3,
     ) -> List[Dict[str, Any]]:
-        """Retrieves learned principles and episodic decisions relevant to the current scenario."""
+        """
+        Hybrid Context Strategy (Gupta et al., 2026 - 'Context Matters'):
+        1. Avoids 'All-History' context bloat (which degrades LLM reasoning via lost-in-the-middle).
+        2. Combines RAFG (Retrieval-Augmented semantic/tag lookup over learned_principles and
+           episodic_decisions for cross-cutting concerns) with a calibrated Last_K window (K=3)
+           of the most recent architectural decisions.
+        """
         principles = self.state.get("learned_principles", [])
+        episodic = self.state.get("episodic_decisions", [])
         if not principles:
             return []
 
+        # 1. Last_K Window: most recent K decisions for temporal architectural continuity
+        recent_slice = principles[-last_k:] if last_k > 0 else []
+
+        # 2. RAFG Retrieval: targeted lookup for cross-cutting concerns across full history
         blob = f"{prompt} {' '.join(quality_attributes or [])} {' '.join(constraints or [])}".lower()
         tokens = set(re.findall(r"[a-z0-9\-]+", blob))
+
+        # Index episodic rationales by principle_id to enrich cross-cutting retrieval
+        episodic_by_pid = {e.get("principle_id"): e for e in episodic if e.get("principle_id")}
 
         scored: List[tuple[float, Dict[str, Any]]] = []
         for p in principles:
             score = 0.0
             tags = [t.lower() for t in p.get("tags", [])]
-            p_text = f"{p.get('principle', '')} {p.get('preferred_pattern', '')} {' '.join(tags)}".lower()
+            ep = episodic_by_pid.get(p.get("id"), {})
+            ep_title = ep.get("scenario_title", "")
+            p_text = f"{p.get('principle', '')} {p.get('preferred_pattern', '')} {ep_title} {' '.join(tags)}".lower()
+
             for tok in tokens:
                 if len(tok) < 3:
                     continue
@@ -98,7 +118,18 @@ class LongLoopMemory:
                 scored.append((score, p))
 
         scored.sort(key=lambda x: x[0], reverse=True)
-        return [p for _, p in scored[:top_k]]
+        rafg_selected = [p for _, p in scored[:rafg_k]]
+
+        # Merge RAFG matches first (highest semantic relevance), then append Last_K recent items
+        merged: List[Dict[str, Any]] = list(rafg_selected)
+        seen_ids = {p["id"] for p in merged}
+        max_total = min(top_k, last_k + rafg_k)
+        for rp in reversed(recent_slice):
+            if rp["id"] not in seen_ids and len(merged) < max_total:
+                merged.append(rp)
+                seen_ids.add(rp["id"])
+
+        return merged[:top_k]
 
     def record_human_decision(
         self,
@@ -168,4 +199,3 @@ class LongLoopMemory:
 
 
 long_loop_memory = LongLoopMemory()
-

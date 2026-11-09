@@ -26,9 +26,9 @@ class MessageType(str, Enum):
 
 class AgentOutputContract(BaseModel):
     """Mandatory output contract shared by all peer architect agents (Slide 5)."""
-    selected_option: str = Field(..., description="The architectural option chosen by the agent")
+    selected_option: str = Field(..., min_length=1, description="The architectural option chosen by the agent")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score between 0.0 and 1.0")
-    summary_argument: str = Field(..., description="Core architectural argument justifying the choice")
+    summary_argument: str = Field(..., min_length=1, description="Core architectural argument justifying the choice")
     evaluated_options: List[str] = Field(default_factory=list, description="Options explicitly analyzed")
     tradeoffs: Dict[str, str] = Field(
         default_factory=dict,
@@ -80,7 +80,7 @@ class A2AMessage(BaseModel):
 
 
 class DissentRecord(BaseModel):
-    """Captures minority views so dissent is never lost (Slide 7)."""
+    """Captures minority views so dissent is never lost (Slide 7 & Miccio et al., 2026)."""
     agent_id: str
     agent_name: str
     stance: str
@@ -90,23 +90,49 @@ class DissentRecord(BaseModel):
     citations: List[str] = Field(default_factory=list)
 
 
+class ConsideredOptionMADR(BaseModel):
+    """
+    MADR-compliant structured evaluation of each considered architectural option
+    including rejected alternatives (Miccio, Tommasel, Díaz-Pace, 2026 - ADRminer).
+    """
+    option_name: str = Field(..., min_length=1, description="Canonical name of the candidate option")
+    pros: List[str] = Field(..., min_length=1, description="Explicit positive consequences / arguments in favor")
+    cons: List[str] = Field(..., min_length=1, description="Explicit negative consequences / rejection reasons")
+    is_chosen: bool = Field(default=False, description="True if this option was selected as the final decision")
+
+
 class ADRDecision(BaseModel):
-    """Architecture Decision Record synthesized by the Chair Agent (Slide 7 & 13)."""
+    """
+    MADR-compliant Architecture Decision Record synthesized by the Chair Agent
+    (Slide 7 & 13; Miccio, Tommasel, Díaz-Pace, 2026).
+    """
     adr_id: str = Field(default_factory=lambda: f"ADR-{uuid.uuid4().hex[:6].upper()}")
-    title: str
+    title: str = Field(..., min_length=3)
     status: str = "PROPOSED"
-    context_and_problem: str
-    quality_attributes: List[str]
-    considered_options: List[str]
-    chosen_option: str
+    context_and_problem: str = Field(..., min_length=5)
+    decision_drivers: List[str] = Field(
+        ...,
+        min_length=1,
+        description="Mandatory non-empty list of ISO/IEC 25010 decision drivers & constraints",
+    )
+    quality_attributes: List[str] = Field(..., min_length=1)
+    considered_options: List[str] = Field(..., min_length=2)
+    options_analysis: List[ConsideredOptionMADR] = Field(
+        ...,
+        min_length=1,
+        description="Structured MADR pros/cons evaluation for the chosen option and all rejected alternatives",
+    )
+    chosen_option: str = Field(..., min_length=1)
     consensus_type: str  # "UNANIMOUS", "SUPERMAJORITY", "WEIGHTED_MAJORITY", "CHAIR_TIE_BREAK"
     consensus_score: float
-    rationale: str
+    rationale: str = Field(..., min_length=5)
     tradeoffs: Dict[str, str]
     citations: List[str]
     vote_breakdown: Dict[str, str]
     weighted_scores: Dict[str, float]
     minority_dissent: List[DissentRecord] = Field(default_factory=list)
+    validation_gate_passed: bool = True
+    validation_notes: List[str] = Field(default_factory=list)
     human_approved: Optional[bool] = None
     human_final_decision: Optional[str] = None
     human_notes: Optional[str] = None
@@ -169,4 +195,3 @@ class AgentConfigModel(BaseModel):
     mandate: str
     priorities: List[str] = Field(default_factory=list)
     enabled: bool = True
-

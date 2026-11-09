@@ -7,10 +7,11 @@ from backend.config import settings
 
 class KnowledgeBase:
     """
-    Shared Architectural Knowledge Base with Provenance Tracking (Slide 9).
+    Shared Architectural Knowledge Base with Provenance Tracking (Slide 9)
+    and Decision-Layer Constraint Compatibility Filtering (Nishio, Washizaki, Muccini et al., 2026).
     Contains ISO/IEC 25010 quality attributes, Architectural Patterns, Tactics,
-    and Organizational ADRs. Every LLM in the council queries the exact same KB
-    to guarantee a fair, grounded debate.
+    and Organizational ADRs with structured problem, decision_drivers, options,
+    selection_conditions ("Select when"), and rejection_conditions ("Reject when").
     """
 
     def __init__(self, kb_path: Path = None) -> None:
@@ -32,7 +33,13 @@ class KnowledgeBase:
         constraints: List[str] = None,
         top_k: int = 6,
     ) -> List[Dict[str, Any]]:
-        """Retrieves the most relevant KB items with provenance metadata."""
+        """
+        Retrieves the most relevant KB items by combining:
+        1. Lexical/tag similarity on problem, summary, and options;
+        2. ISO/IEC 25010 decision_drivers alignment;
+        3. Active Decision-Layer compatibility evaluation against selection_conditions ("Select when")
+           and rejection_conditions ("Reject when") (Nishio, Washizaki, Muccini et al., 2026).
+        """
         quality_attributes = [q.lower() for q in (quality_attributes or [])]
         constraints = [c.lower() for c in (constraints or [])]
         tokens = set(re.findall(r"[a-z0-9\-]+", query.lower()))
@@ -43,10 +50,16 @@ class KnowledgeBase:
         for item in self.items:
             score = 0.0
             item_tags = [t.lower() for t in item.get("tags", [])]
-            item_qas = [q.lower() for q in item.get("quality_attributes", [])]
-            text_blob = f"{item['title']} {item['summary']} {' '.join(item_tags)}".lower()
+            item_qas = [
+                q.lower()
+                for q in (item.get("quality_attributes", []) + item.get("decision_drivers", []))
+            ]
+            select_conds = [s.lower() for s in item.get("selection_conditions", [])]
+            reject_conds = [r.lower() for r in item.get("rejection_conditions", [])]
+            problem_text = item.get("problem", "")
+            text_blob = f"{item['title']} {problem_text} {item['summary']} {' '.join(item_tags)}".lower()
 
-            # Tag & token overlap
+            # 1. Tag & token overlap
             for tok in tokens:
                 if len(tok) < 3:
                     continue
@@ -55,15 +68,19 @@ class KnowledgeBase:
                 elif tok in text_blob:
                     score += 1.2
 
-            # Quality attribute match
+            # 2. ISO/IEC 25010 Decision Driver & Quality Attribute match
             for qa in quality_attributes:
-                if qa in item_qas or qa in text_blob:
+                if any(qa in d for d in item_qas) or qa in text_blob:
                     score += 2.5
 
-            # Constraint match
+            # 3. Active Context Constraint Compatibility ("Select when" vs "Reject when")
             for c in constraints:
+                if any(c in sc or sc in c for sc in select_conds):
+                    score += 4.0  # Strong boost when context constraint satisfies selection_conditions
+                if any(c in rc or rc in c for rc in reject_conds):
+                    score -= 5.0  # Active pruning penalty when constraint triggers rejection_conditions
                 if any(part in item_tags for part in c.split()):
-                    score += 2.5
+                    score += 2.0
 
             scored.append((score, item))
 
@@ -84,4 +101,3 @@ class KnowledgeBase:
 
 
 knowledge_base = KnowledgeBase()
-

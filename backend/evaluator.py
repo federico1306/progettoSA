@@ -18,22 +18,46 @@ def _score_choice(chosen: str, scenario: Dict[str, Any]) -> tuple[int, float]:
     return 0, 0.0
 
 
+def _compute_driver_and_kb_coverage(
+    text_and_tradeoffs: str,
+    citations: List[str],
+    scenario: Dict[str, Any],
+) -> tuple[float, float]:
+    """
+    Computes Ground-Truth Decision Driver Coverage (%) and Ground-Truth KB Citation Recall (%)
+    against the scenario's expert specification (Check 5 — Dhar et al. & Miccio et al., 2026).
+    """
+    expected_drivers = [q.lower() for q in scenario.get("quality_attributes", [])]
+    blob = (text_and_tradeoffs or "").lower()
+    covered_drivers = sum(
+        1 for d in expected_drivers if d in blob or any(part in blob for part in d.split("-") if len(part) >= 3)
+    )
+    driver_cov = (covered_drivers / max(1, len(expected_drivers))) * 100.0
+
+    expected_kb = set(scenario.get("key_kb_ids", []))
+    cited_kb = {str(c).strip().strip("[]") for c in (citations or [])}
+    kb_recall = (len(expected_kb.intersection(cited_kb)) / max(1, len(expected_kb))) * 100.0 if expected_kb else 100.0
+    return round(driver_cov, 1), round(kb_recall, 1)
+
+
 class EvaluationEngine:
     """
     Executes Experiment A (Council vs. Single-LLM Baselines - Slide 11)
     and Experiment B (Before vs. After Feedback Learning Curve on Held-Out Test Set - Slide 12).
+    Measures Decision Accuracy, Weighted Quality Score, Decision Driver Coverage (%),
+    KB Provenance Recall (%), Trade-off Count, and Latency.
     """
 
     async def run_experiment_a(self, use_fast_sim: bool = True) -> Dict[str, Any]:
         """
-        Experiment A: Compares each Single LLM alone (no agents, no debate, no memory)
+        Experiment A: Compares each Single LLM alone (zero-shot, no agents, no debate, no RAG, no memory)
         against the Architect Council (Untrained vs. Feedback-Trained) on the 12 Held-Out Test Scenarios.
         """
         test_scenarios = benchmark_repo.get_test_split()
         feedback_scenarios = benchmark_repo.get_feedback_split()
         active_pool = orchestrator.get_agent_pool()
 
-        # 1. Evaluate Single-LLM Baselines (each LLM family alone)
+        # 1. Evaluate Single-LLM Baselines (each LLM family alone in zero-shot isolation)
         baselines_summary: List[Dict[str, Any]] = []
         for agent_cfg in active_pool:
             if not agent_cfg.get("enabled", True):
@@ -42,6 +66,8 @@ class EvaluationEngine:
             quality_sum = 0.0
             tradeoff_sum = 0
             citation_sum = 0
+            driver_cov_sum = 0.0
+            kb_recall_sum = 0.0
             latency_sum = 0.0
             scenario_results = []
 
@@ -55,10 +81,17 @@ class EvaluationEngine:
                     prefer_fast_sim=use_fast_sim,
                 )
                 exact, q_score = _score_choice(res["selected_option"], scen)
+                d_cov, k_rec = _compute_driver_and_kb_coverage(
+                    res.get("summary_argument", ""),
+                    res.get("citations", []),
+                    scen,
+                )
                 exact_hits += exact
                 quality_sum += q_score
                 tradeoff_sum += res["tradeoff_count"]
                 citation_sum += res["citation_count"]
+                driver_cov_sum += d_cov
+                kb_recall_sum += k_rec
                 latency_sum += res["latency_ms"]
                 scenario_results.append(
                     {
@@ -67,6 +100,8 @@ class EvaluationEngine:
                         "expert_choice": scen["expert_choice"],
                         "exact_match": bool(exact),
                         "quality_score": q_score,
+                        "driver_coverage_pct": d_cov,
+                        "kb_recall_pct": k_rec,
                     }
                 )
 
@@ -77,6 +112,8 @@ class EvaluationEngine:
                     "system_type": "baseline_single_llm",
                     "accuracy_pct": round((exact_hits / n) * 100.0, 1),
                     "weighted_quality_pct": round((quality_sum / n) * 100.0, 1),
+                    "avg_driver_coverage_pct": round(driver_cov_sum / n, 1),
+                    "avg_kb_recall_pct": round(kb_recall_sum / n, 1),
                     "avg_tradeoffs": round(tradeoff_sum / n, 2),
                     "avg_citations": round(citation_sum / n, 2),
                     "avg_latency_ms": round(latency_sum / n, 1),
@@ -122,11 +159,7 @@ class EvaluationEngine:
         """
         Experiment B (Slide 12): Prove decisions get measurably more accurate after feedback.
         - Benchmark: 24 scenarios split into 12 Feedback Set / 12 Held-Out Test Set.
-        - Evaluates on Held-Out Test Set across 4 learning checkpoints:
-          * Iteration 0: 0 feedback scenarios (Untrained baseline council)
-          * Iteration 1: After 4 feedback scenarios (SCEN-01..04)
-          * Iteration 2: After 8 feedback scenarios (SCEN-01..08)
-          * Iteration 3: After 12 feedback scenarios (SCEN-01..12)
+        - Evaluates on Held-Out Test Set across 4 learning checkpoints (0, 4, 8, 12 feedback scenarios).
         """
         feedback_scenarios = benchmark_repo.get_feedback_split()
         test_scenarios = benchmark_repo.get_test_split()
@@ -148,6 +181,8 @@ class EvaluationEngine:
                 "learned_principles_count": len(long_loop_memory.state.get("learned_principles", [])),
                 "accuracy_pct": eval_0["accuracy_pct"],
                 "weighted_quality_pct": eval_0["weighted_quality_pct"],
+                "avg_driver_coverage_pct": eval_0["avg_driver_coverage_pct"],
+                "avg_kb_recall_pct": eval_0["avg_kb_recall_pct"],
                 "avg_consensus_pct": eval_0["avg_consensus_pct"],
                 "trust_weights": long_loop_memory.get_trust_weights(),
                 "test_results": eval_0["details"],
@@ -174,6 +209,8 @@ class EvaluationEngine:
                     "learned_principles_count": len(long_loop_memory.state.get("learned_principles", [])),
                     "accuracy_pct": eval_step["accuracy_pct"],
                     "weighted_quality_pct": eval_step["weighted_quality_pct"],
+                    "avg_driver_coverage_pct": eval_step["avg_driver_coverage_pct"],
+                    "avg_kb_recall_pct": eval_step["avg_kb_recall_pct"],
                     "avg_consensus_pct": eval_step["avg_consensus_pct"],
                     "trust_weights": long_loop_memory.get_trust_weights(),
                     "test_results": eval_step["details"],
@@ -241,6 +278,8 @@ class EvaluationEngine:
         quality_sum = 0.0
         tradeoff_sum = 0
         citation_sum = 0
+        driver_cov_sum = 0.0
+        kb_recall_sum = 0.0
         latency_sum = 0.0
         consensus_sum = 0.0
         details = []
@@ -261,8 +300,25 @@ class EvaluationEngine:
             )
             chosen = session.adr.chosen_option if session.adr else ""
             exact, q_score = _score_choice(chosen, scen)
+
+            adr_blob = ""
+            if session.adr:
+                adr_blob = (
+                    f"{session.adr.rationale} "
+                    f"{' '.join(session.adr.decision_drivers)} "
+                    f"{' '.join(session.adr.tradeoffs.keys())} "
+                    f"{' '.join(session.adr.tradeoffs.values())}"
+                )
+            d_cov, k_rec = _compute_driver_and_kb_coverage(
+                adr_blob,
+                session.adr.citations if session.adr else [],
+                scen,
+            )
+
             exact_hits += exact
             quality_sum += q_score
+            driver_cov_sum += d_cov
+            kb_recall_sum += k_rec
             tradeoff_sum += len(session.adr.tradeoffs) if session.adr else 0
             citation_sum += len(session.adr.citations) if session.adr else 0
             latency_sum += session.total_latency_ms
@@ -275,6 +331,8 @@ class EvaluationEngine:
                     "expert_choice": scen["expert_choice"],
                     "exact_match": bool(exact),
                     "quality_score": q_score,
+                    "driver_coverage_pct": d_cov,
+                    "kb_recall_pct": k_rec,
                     "consensus_type": session.adr.consensus_type if session.adr else "NONE",
                     "consensus_pct": round((session.adr.consensus_score * 100.0), 1) if session.adr else 0.0,
                     "dissent_count": len(session.adr.minority_dissent) if session.adr else 0,
@@ -289,6 +347,8 @@ class EvaluationEngine:
             "system_type": "architect_council",
             "accuracy_pct": round((exact_hits / n) * 100.0, 1),
             "weighted_quality_pct": round((quality_sum / n) * 100.0, 1),
+            "avg_driver_coverage_pct": round(driver_cov_sum / n, 1),
+            "avg_kb_recall_pct": round(kb_recall_sum / n, 1),
             "avg_tradeoffs": round(tradeoff_sum / n, 2),
             "avg_citations": round(citation_sum / n, 2),
             "avg_consensus_pct": round(consensus_sum / n, 1),
@@ -299,4 +359,3 @@ class EvaluationEngine:
 
 
 evaluation_engine = EvaluationEngine()
-

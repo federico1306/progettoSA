@@ -170,21 +170,42 @@ function renderADR(session) {
     .map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`)
     .join("");
 
+  const madrOptionsHtml = (adr.options_analysis || [])
+    .map(
+      (oa) => `
+      <div style="background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:8px;margin-top:6px;border-left:3px solid ${oa.is_chosen ? "#22c55e" : "#64748b"};">
+        <div style="font-size:0.83rem;font-weight:800;color:${oa.is_chosen ? "#86efac" : "var(--ink)"};">
+          ${oa.is_chosen ? "✅ [CHOSEN] " : "❌ [REJECTED] "}${oa.option_name}
+        </div>
+        <div style="font-size:0.78rem;color:#86efac;margin-top:2px;">+ Pros: ${(oa.pros || []).join("; ")}</div>
+        <div style="font-size:0.78rem;color:#fca5a5;">- Cons: ${(oa.cons || []).join("; ")}</div>
+      </div>`
+    )
+    .join("");
+
+  const gateBadge = adr.validation_gate_passed
+    ? `<span class="pill ok">✓ Validation Gate Passed</span>`
+    : `<span class="pill" style="color:#fca5a5;">⚠ Validation Gate Retry</span>`;
+
   container.innerHTML = `
     <div class="adr-box">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
         <div>
-          <div class="eyebrow" style="color:#86efac;">Phase 5 &mdash; Synthesized Architecture Decision Record</div>
+          <div class="eyebrow" style="color:#86efac;">Phase 5 &mdash; MADR-Compliant Architecture Decision Record</div>
           <h3 style="font-size:1.2rem;font-weight:900;">${adr.adr_id}: ${adr.title}</h3>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          ${gateBadge}
           <span class="pill ok">${adr.consensus_type} (${Math.round(adr.consensus_score * 100)}%)</span>
           <span class="pill accent">${adr.status}</span>
         </div>
       </div>
 
-      <p style="font-size:0.95rem;margin-bottom:10px;">
+      <p style="font-size:0.95rem;margin-bottom:6px;">
         <strong>Selected Decision:</strong> <span style="color:#86efac;font-weight:800;font-size:1.05rem;">${adr.chosen_option}</span>
+      </p>
+      <p style="font-size:0.82rem;color:#f0abfc;margin-bottom:8px;">
+        <strong>Decision Drivers (ISO 25010):</strong> ${(adr.decision_drivers || []).join(" • ")}
       </p>
       <p style="font-size:0.88rem;color:var(--ink);margin-bottom:10px;">${formatMarkdownInline(adr.rationale)}</p>
 
@@ -200,6 +221,11 @@ function renderADR(session) {
             Provenance Citations: ${(adr.citations || []).map((c) => `[${c}]`).join(", ")}
           </div>
         </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <strong style="font-size:0.85rem;color:var(--muted);">MADR Considered Options Analysis (Pros &amp; Cons):</strong>
+        ${madrOptionsHtml}
       </div>
 
       <div style="margin-top:12px;">

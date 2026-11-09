@@ -1,3 +1,4 @@
+import asyncio
 import copy
 import time
 import uuid
@@ -22,7 +23,7 @@ from backend.memory import long_loop_memory
 class CouncilOrchestrator:
     """
     Orchestrates the 5-Phase Debate Protocol (Slide 7):
-    Frame -> Propose (Isolated) -> Critique & Revise (Bounded) -> Converge -> Decide (ADR + Dissent)
+    Frame -> Propose (Parallel & Isolated) -> Critique & Revise (Bounded) -> Converge -> ADR Validation Gate -> Decide
     Plus Pillar 3 Short-Loop and Long-Loop Human Architect Feedback (Slide 10).
     """
 
@@ -30,7 +31,6 @@ class CouncilOrchestrator:
         self._agent_configs: List[Dict[str, Any]] = copy.deepcopy(DEFAULT_AGENT_POOL)
         self.chair = ChairAgent(CHAIR_AGENT_CONFIG)
         self.sessions: Dict[str, DebateSession] = {}
-        # Map of latest agent message per session for short-loop continuation
         self._latest_agent_messages: Dict[str, Dict[str, A2AMessage]] = {}
 
     def get_agent_pool(self) -> List[Dict[str, Any]]:
@@ -88,7 +88,7 @@ class CouncilOrchestrator:
             "Domain-Aligned Microservices with API Gateway & Service Mesh",
         ]
 
-        # Grounding: Retrieve shared KB items & Long-Loop learned principles
+        # Grounding: Retrieve shared KB items (with Select/Reject filtering) & Hybrid Last_K + RAFG Memory
         kb_items = knowledge_base.retrieve(
             query=f"{title} {req.requirements_prompt}",
             quality_attributes=quality_attributes,
@@ -100,7 +100,9 @@ class CouncilOrchestrator:
                 prompt=f"{title} {req.requirements_prompt}",
                 quality_attributes=quality_attributes,
                 constraints=constraints,
-                top_k=4,
+                top_k=5,
+                last_k=3,
+                rafg_k=3,
             )
             if req.use_long_loop_memory
             else []
@@ -137,16 +139,16 @@ class CouncilOrchestrator:
         session.messages.append(frame_msg)
 
         # ---------------------------------------------------------------------
-        # PHASE 2: PROPOSE (Each agent alone, no peeking)
+        # PHASE 2: PROPOSE (Parallel & Isolated execution — no peeking)
         # ---------------------------------------------------------------------
         await message_bus.publish_status(
-            session_id, "PROPOSE", "Peer Architects formulating independent proposals in isolation..."
+            session_id, "PROPOSE", "Peer Architects formulating independent proposals in parallel isolation..."
         )
         active_agents = self.get_active_agents()
         latest_by_agent: Dict[str, A2AMessage] = {}
 
-        for agent in active_agents:
-            prop_msg = await agent.propose_alone(
+        proposal_tasks = [
+            agent.propose_alone(
                 session_id=session_id,
                 prompt=req.requirements_prompt,
                 candidate_options=candidate_options,
@@ -156,6 +158,10 @@ class CouncilOrchestrator:
                 learned_principles=learned_principles,
                 prefer_fast_sim=prefer_fast_sim,
             )
+            for agent in active_agents
+        ]
+        proposals = await asyncio.gather(*proposal_tasks)
+        for agent, prop_msg in zip(active_agents, proposals):
             await message_bus.publish(prop_msg)
             session.messages.append(prop_msg)
             latest_by_agent[agent.agent_id] = prop_msg
@@ -171,9 +177,8 @@ class CouncilOrchestrator:
                 f"Critique & Revise Round {r}/{max_rounds}: Agents challenging peers and testing evidence...",
             )
             current_round_peers = list(latest_by_agent.values())
-            new_latest: Dict[str, A2AMessage] = {}
-            for agent in active_agents:
-                crit_msg = await agent.critique_and_revise(
+            critique_tasks = [
+                agent.critique_and_revise(
                     session_id=session_id,
                     round_num=r,
                     prompt=req.requirements_prompt,
@@ -187,12 +192,16 @@ class CouncilOrchestrator:
                     human_critique=None,
                     prefer_fast_sim=prefer_fast_sim,
                 )
+                for agent in active_agents
+            ]
+            critiques = await asyncio.gather(*critique_tasks)
+            new_latest: Dict[str, A2AMessage] = {}
+            for agent, crit_msg in zip(active_agents, critiques):
                 await message_bus.publish(crit_msg)
                 session.messages.append(crit_msg)
                 new_latest[agent.agent_id] = crit_msg
             latest_by_agent = new_latest
 
-            # Early termination if unanimous agreement is reached after at least 1 critique round
             distinct_choices = {
                 m.contract.selected_option for m in latest_by_agent.values() if m.contract
             }
@@ -202,10 +211,10 @@ class CouncilOrchestrator:
         self._latest_agent_messages[session_id] = latest_by_agent
 
         # ---------------------------------------------------------------------
-        # PHASE 4 & 5: CONVERGE & DECIDE (Chair tallies votes, records dissent, writes ADR)
+        # PHASE 4 & 5: CONVERGE, ADR VALIDATION GATE & DECIDE
         # ---------------------------------------------------------------------
         await message_bus.publish_status(
-            session_id, "CONVERGE", "Chair Agent computing trust-weighted consensus & minority dissent..."
+            session_id, "CONVERGE", "Chair Agent computing trust-weighted consensus & running ADR Validation Gate..."
         )
         trust_weights = (
             long_loop_memory.get_trust_weights()
@@ -222,11 +231,60 @@ class CouncilOrchestrator:
             trust_weights=trust_weights,
             kb_items=kb_items,
             learned_principles=learned_principles,
+            constraints=constraints,
         )
+
+        # ADR Validation Gate (Díaz-Pace et al., ArchMind & AgenticAKM 2026)
+        is_valid, violations = self.chair.validate_adr_constraints(
+            adr=adr,
+            constraints=constraints,
+            candidate_options=candidate_options,
+            kb_items=kb_items,
+        )
+        if not is_valid:
+            # Bounded internal self-correction cycle (max 1 retry)
+            gate_feedback = f"VALIDATION GATE REJECTION: {'; '.join(violations)}. Select a compliant option."
+            retry_tasks = [
+                agent.critique_and_revise(
+                    session_id=session_id,
+                    round_num=max_rounds + 1,
+                    prompt=req.requirements_prompt,
+                    candidate_options=candidate_options,
+                    quality_attributes=quality_attributes,
+                    constraints=constraints,
+                    kb_items=kb_items,
+                    learned_principles=learned_principles,
+                    peer_messages=list(latest_by_agent.values()),
+                    own_last_message=latest_by_agent[agent.agent_id],
+                    human_critique=gate_feedback,
+                    prefer_fast_sim=prefer_fast_sim,
+                )
+                for agent in active_agents
+            ]
+            retried_msgs = await asyncio.gather(*retry_tasks)
+            for agent, r_msg in zip(active_agents, retried_msgs):
+                await message_bus.publish(r_msg)
+                session.messages.append(r_msg)
+                latest_by_agent[agent.agent_id] = r_msg
+
+            converge_msg, decide_msg, adr = self.chair.synthesize_convergence_and_adr(
+                session_id=session_id,
+                title=title,
+                prompt=req.requirements_prompt,
+                candidate_options=candidate_options,
+                quality_attributes=quality_attributes,
+                final_agent_messages=list(latest_by_agent.values()),
+                trust_weights=trust_weights,
+                kb_items=kb_items,
+                learned_principles=learned_principles,
+                constraints=constraints,
+            )
+            self.chair.validate_adr_constraints(adr, constraints, candidate_options, kb_items)
+
         await message_bus.publish(converge_msg)
         session.messages.append(converge_msg)
 
-        await message_bus.publish_status(session_id, "DECIDE", "ADR synthesized and ready for Human Architect review.")
+        await message_bus.publish_status(session_id, "DECIDE", "MADR validated and ready for Human Architect review.")
         await message_bus.publish(decide_msg)
         session.messages.append(decide_msg)
 
@@ -280,9 +338,8 @@ class CouncilOrchestrator:
         current_peers = list(latest_by_agent.values())
         new_latest: Dict[str, A2AMessage] = {}
 
-        for agent in active_agents:
-            own_prev = latest_by_agent.get(agent.agent_id) or session.messages[1]
-            rev_msg = await agent.critique_and_revise(
+        rev_tasks = [
+            agent.critique_and_revise(
                 session_id=session.session_id,
                 round_num=10 + session.short_loop_iterations,
                 prompt=session.requirements_prompt,
@@ -292,10 +349,14 @@ class CouncilOrchestrator:
                 kb_items=session.retrieved_kb_items,
                 learned_principles=session.applied_learned_principles,
                 peer_messages=current_peers,
-                own_last_message=own_prev,
+                own_last_message=latest_by_agent.get(agent.agent_id) or session.messages[1],
                 human_critique=req.human_critique,
                 prefer_fast_sim=prefer_fast_sim,
             )
+            for agent in active_agents
+        ]
+        rev_msgs = await asyncio.gather(*rev_tasks)
+        for agent, rev_msg in zip(active_agents, rev_msgs):
             await message_bus.publish(rev_msg)
             session.messages.append(rev_msg)
             new_latest[agent.agent_id] = rev_msg
@@ -312,6 +373,10 @@ class CouncilOrchestrator:
             trust_weights=trust_weights,
             kb_items=session.retrieved_kb_items,
             learned_principles=session.applied_learned_principles,
+            constraints=session.constraints,
+        )
+        self.chair.validate_adr_constraints(
+            updated_adr, session.constraints, session.candidate_options, session.retrieved_kb_items
         )
         await message_bus.publish(converge_msg)
         session.messages.append(converge_msg)
@@ -362,4 +427,3 @@ class CouncilOrchestrator:
 
 
 orchestrator = CouncilOrchestrator()
-
