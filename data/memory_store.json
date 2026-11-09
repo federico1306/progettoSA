@@ -3,7 +3,7 @@
   "agent_trust_weights": {
     "agent_pragmatist": 2.0,
     "agent_guardian": 2.0,
-    "agent_innovator": 0.55,
+    "agent_innovator": 0.67,
     "agent_skeptic": 2.0
   },
   "learned_principles": [
@@ -207,6 +207,24 @@
         "evolvability"
       ],
       "created_at": "2026-11-09T18:09:38.638833+00:00"
+    },
+    {
+      "id": "LEARNED-13",
+      "principle": "When evaluating 'Cleanroom Factory Tool Event Ingestion (5k Tools)' patterns (on-prem, small-team, <1s latency, 5k tools (~50k events/sec), latency), prefer 'NATS JetStream (Clustered Go Single-Binary) or Redpanda' because: For small ops teams (<=5 engineers) on-prem, prefer single-binary streaming/storage engines over multi-cluster JVM ecosystems.",
+      "preferred_pattern": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "rationale": "For small ops teams (<=5 engineers) on-prem, prefer single-binary streaming/storage engines over multi-cluster JVM ecosystems.",
+      "tags": [
+        "on-prem",
+        "small-team",
+        "<1s latency",
+        "5k tools (~50k events/sec)",
+        "latency",
+        "operability",
+        "reliability",
+        "cost",
+        "maintainability"
+      ],
+      "created_at": "2026-11-09T18:37:46.287238+00:00"
     }
   ],
   "episodic_decisions": [
@@ -377,6 +395,20 @@
       },
       "principle_id": "LEARNED-12",
       "timestamp": "2026-11-09T18:09:38.638837+00:00"
+    },
+    {
+      "session_id": "sess-e33e1dbc",
+      "scenario_title": "Cleanroom Factory Tool Event Ingestion (5k Tools)",
+      "final_chosen_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "human_rationale": "For small ops teams (<=5 engineers) on-prem, prefer single-binary streaming/storage engines over multi-cluster JVM ecosystems.",
+      "agent_votes": {
+        "agent_pragmatist": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_guardian": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_innovator": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_skeptic": "NATS JetStream (Clustered Go Single-Binary) or Redpanda"
+      },
+      "principle_id": "LEARNED-13",
+      "timestamp": "2026-11-09T18:37:46.287335+00:00"
     }
   ],
   "feedback_history": [
@@ -547,6 +579,20 @@
       },
       "principle_id": "LEARNED-12",
       "timestamp": "2026-11-09T18:09:38.638837+00:00"
+    },
+    {
+      "session_id": "sess-e33e1dbc",
+      "scenario_title": "Cleanroom Factory Tool Event Ingestion (5k Tools)",
+      "final_chosen_option": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+      "human_rationale": "For small ops teams (<=5 engineers) on-prem, prefer single-binary streaming/storage engines over multi-cluster JVM ecosystems.",
+      "agent_votes": {
+        "agent_pragmatist": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_guardian": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_innovator": "NATS JetStream (Clustered Go Single-Binary) or Redpanda",
+        "agent_skeptic": "NATS JetStream (Clustered Go Single-Binary) or Redpanda"
+      },
+      "principle_id": "LEARNED-13",
+      "timestamp": "2026-11-09T18:37:46.287335+00:00"
     }
   ]
 }

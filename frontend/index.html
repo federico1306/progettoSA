@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI Assisted Software Architecting Council — 2026/27</title>
+  <title>AI Architect Council — Software Architecture 2026/27</title>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
@@ -18,21 +18,20 @@
       </div>
     </div>
     <div class="status-pills">
-      <span class="pill ok" id="sseStatusPill">&#9679; A2A Bus Live</span>
-      <span class="pill accent" id="llmModePill">Multi-LLM Active</span>
-      <span class="pill" id="memoryCountPill">Learned Principles: 0</span>
-      <a href="/defense" target="_blank" class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;text-decoration:none;">&#127891; Defense Slides</a>
-      <a href="/slides" target="_blank" class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;text-decoration:none;">&#128196; Prof. Slides</a>
+      <span class="pill ok" id="sseStatusPill">&#9679; Canale Live Attivo</span>
+      <span class="pill accent" id="memoryCountPill">Regole Imparate: 0</span>
+      <a href="/defense" target="_blank" class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;text-decoration:none;">&#127891; Slide Esame</a>
+      <a href="/slides" target="_blank" class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;text-decoration:none;">&#128196; Traccia Prof</a>
     </div>
   </header>
 
   <!-- Navigation Tabs -->
   <nav class="nav-tabs">
-    <button class="tab-btn active" data-tab="tab-debate">&#9878; 1. Live Council Debate &amp; ADR</button>
-    <button class="tab-btn" data-tab="tab-agents">&#129302; 2. Swappable Agent Pool &amp; A2A Trace</button>
-    <button class="tab-btn" data-tab="tab-knowledge">&#128218; 3. Grounding KB &amp; Feedback Memory</button>
-    <button class="tab-btn" data-tab="tab-eval">&#128202; 4. Evaluation Lab (Exp A &amp; Exp B)</button>
-    <button class="tab-btn" data-tab="tab-docs">&#128208; 5. Architecture Doc &amp; ADRs</button>
+    <button class="tab-btn active" data-tab="tab-debate">1. &#128172; Dibattito Live &amp; Decisione (Demo)</button>
+    <button class="tab-btn" data-tab="tab-agents">2. &#129302; I 4 Agenti &amp; Aggiunta a Caldo</button>
+    <button class="tab-btn" data-tab="tab-knowledge">3. &#128218; Knowledge Base &amp; Memoria</button>
+    <button class="tab-btn" data-tab="tab-eval">4. &#128202; Esperimenti A &amp; B (Grafici)</button>
+    <button class="tab-btn" data-tab="tab-docs">5. &#128214; Guida Semplicissima &amp; Documenti</button>
   </nav>
 
   <main class="container">
@@ -45,46 +44,47 @@
       <!-- 5-Phase Protocol Bar -->
       <div class="phase-stepper" id="phaseStepper">
         <div class="phase-step" data-phase="FRAME">
-          <div class="p-name">1. Frame</div>
-          <span class="p-sub">Chair sets context &amp; KB</span>
+          <div class="p-name">Fase 1: Inquadramento</div>
+          <span class="p-sub">Il Chair legge problema e KB</span>
         </div>
         <div class="phase-step" data-phase="PROPOSE">
-          <div class="p-name">2. Propose</div>
-          <span class="p-sub">Each agent alone (no peeking)</span>
+          <div class="p-name">Fase 2: Proposte Isolate</div>
+          <span class="p-sub">I 4 agenti pensano da soli</span>
         </div>
         <div class="phase-step" data-phase="CRITIQUE">
-          <div class="p-name">3. Critique &amp; Revise</div>
-          <span class="p-sub">Challenge, defend or update</span>
+          <div class="p-name">Fase 3: Critica &amp; Dibattito</div>
+          <span class="p-sub">Si sfidano con prove KB</span>
         </div>
         <div class="phase-step" data-phase="CONVERGE">
-          <div class="p-name">4. Converge</div>
-          <span class="p-sub">Trust-weighted consensus</span>
+          <div class="p-name">Fase 4: Votazione</div>
+          <span class="p-sub">Calcolo consenso pesato</span>
         </div>
         <div class="phase-step" data-phase="DECIDE">
-          <div class="p-name">5. Decide</div>
-          <span class="p-sub">ADR Proposal + Dissent</span>
+          <div class="p-name">Fase 5: Verbale ADR</div>
+          <span class="p-sub">Proposta finale + Dissensi</span>
         </div>
       </div>
 
       <div class="grid-2">
-        <!-- Left Column: Scenario & Controls -->
+        <!-- Left Column: Step 1 & Step 3 -->
         <div>
+          <!-- STEP 1 -->
           <div class="card">
-            <div class="eyebrow">Human Architect Input</div>
+            <span class="step-badge">PASSO 1 &mdash; Scegli il Problema</span>
             <div class="card-header">
-              <div class="card-title">&#127919; Architectural Decision Scenario</div>
+              <div class="card-title">&#127919; Scenario Architetturale</div>
             </div>
 
-            <label for="scenarioSelect">Load Benchmark Scenario (24 Curated Scenarios):</label>
+            <label for="scenarioSelect">Scegli uno dei 24 Scenari Pronti (oppure scrivi sotto):</label>
             <select id="scenarioSelect"></select>
 
-            <label for="scenTitle">Decision Title:</label>
+            <label for="scenTitle">Titolo della Decisione:</label>
             <input type="text" id="scenTitle" value="Cleanroom Factory Tool Event Ingestion (5k Tools)" />
 
-            <label for="scenPrompt">Requirements &amp; Context Prompt:</label>
+            <label for="scenPrompt">Descrizione del Problema e Requisiti:</label>
             <textarea id="scenPrompt" rows="3">Event ingestion for 5,000 wafer fabrication factory tools, strictly on-premise deployment, &lt;1s end-to-end latency for anomaly detection, maintained by a small 3-person ops team.</textarea>
 
-            <label for="scenOptions">Candidate Options (one per line):</label>
+            <label for="scenOptions">Opzioni Tecnologiche Candidate (una per riga):</label>
             <textarea id="scenOptions" rows="4">NATS JetStream (Clustered Go Single-Binary) or Redpanda
 Apache Kafka on Kubernetes with Strimzi Operator (KRaft mode)
 Raw Self-Managed Apache Kafka + ZooKeeper + Flink Cluster
@@ -92,75 +92,80 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div>
-                <label for="scenQAs">Quality Attributes:</label>
+                <label for="scenQAs">Qualità (ISO 25010):</label>
                 <input type="text" id="scenQAs" value="latency, operability, reliability, cost" />
               </div>
               <div>
-                <label for="scenConstraints">Hard Constraints:</label>
+                <label for="scenConstraints">Vincoli Ferrei:</label>
                 <input type="text" id="scenConstraints" value="on-prem, small-team, <1s latency" />
               </div>
             </div>
 
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:0.84rem;color:var(--muted);">
-              <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:pointer;">
-                <input type="checkbox" id="useMemoryCheck" checked /> Use Long-Loop Feedback Memory
+            <div style="background:var(--surface-alt);padding:10px 12px;border-radius:8px;border:1px solid var(--line);margin-top:14px;display:flex;flex-direction:column;gap:6px;font-size:0.83rem;">
+              <label style="margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" id="useMemoryCheck" checked />
+                <span>Usa la Memoria delle regole imparate (Long-Loop)</span>
               </label>
-              <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:pointer;" title="Uncheck to force live external HTTP calls for every agent">
-                <input type="checkbox" id="fastSimCheck" /> Fast Deterministic Sim Mode
+              <label style="margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" id="fastSimCheck" />
+                <span>Modalità Veloce Istantanea (senza attendere internet)</span>
               </label>
             </div>
 
             <div class="btn-row">
-              <button class="btn btn-primary" id="startDebateBtn" style="flex:1;">&#9889; Start Council Debate</button>
-              <button class="btn btn-outline" id="runBaselineBtn" title="Run each LLM in isolation without debate (Slide 11)">vs. Single LLM</button>
+              <button class="btn btn-primary" id="startDebateBtn" style="flex:1;">&#9654; 1. Avvia Dibattito del Consiglio</button>
+              <button class="btn btn-outline" id="runBaselineBtn" title="Vedi cosa risponderebbero i singoli modelli senza parlarsi">Confronta con AI Singole</button>
             </div>
           </div>
 
-          <!-- Pillar 3: Short-Loop & Long-Loop Feedback Controls -->
+          <!-- STEP 3: HUMAN FEEDBACK -->
           <div class="card" id="feedbackCard">
-            <div class="eyebrow">Pillar 3 &mdash; Human-in-the-Loop Learning</div>
+            <span class="step-badge green">PASSO 3 &mdash; Tocca a Te (Architetto Umano)</span>
             <div class="card-header">
-              <div class="card-title">&#128257; Short Loop &amp; Long Loop Feedback</div>
+              <div class="card-title">&#128100; Correggi o Conferma la Decisione</div>
             </div>
 
-            <p style="font-size:0.83rem;color:var(--muted);margin-bottom:8px;">
-              <strong>Short Loop (Current Decision):</strong> Challenge the council or add a constraint to trigger an immediate revision round.
-            </p>
-            <textarea id="shortLoopInput" rows="2" placeholder="e.g., Our 3-person ops team has zero Kubernetes/JVM experience. Re-evaluate operational burden under KB-ADR-01."></textarea>
-            <div class="btn-row" style="margin-top:8px;">
-              <button class="btn btn-outline" id="shortLoopBtn" disabled style="width:100%;">&#128172; Send Short-Loop Critique &amp; Revise Proposal</button>
+            <div style="background:var(--amber-soft);border:1px solid var(--amber-border);padding:12px;border-radius:8px;margin-bottom:14px;">
+              <strong style="font-size:0.86rem;color:#b45309;">Opzione 3A &mdash; Short Loop (Chiedi una modifica al volo):</strong>
+              <p style="font-size:0.8rem;color:var(--muted);margin:4px 0 8px;">
+                Non sei convinto della proposta? Scrivi un'osservazione qui sotto e gli agenti rifaranno subito un giro di discussione per accontentarti.
+              </p>
+              <textarea id="shortLoopInput" rows="2" placeholder="Es: Il nostro team di 3 persone non conosce Java/JVM, scegliete una soluzione single-binary come NATS."></textarea>
+              <button class="btn btn-outline" id="shortLoopBtn" disabled style="width:100%;margin-top:8px;">&#128172; Invia Critica e Fai Ridiscutere gli Agenti</button>
             </div>
 
-            <hr style="border:none;border-top:1px solid var(--line);margin:16px 0;" />
-
-            <p style="font-size:0.83rem;color:var(--muted);margin-bottom:8px;">
-              <strong>Long Loop (All Future Decisions):</strong> Record final Human Architect decision to update agent trust weights &amp; store an organizational principle.
-            </p>
-            <label for="longLoopOption">Final Human Architect Decision:</label>
-            <select id="longLoopOption"></select>
-            <label for="longLoopRationale">Architectural Rationale / Learned Principle:</label>
-            <input type="text" id="longLoopRationale" value="For small ops teams (<=5 engineers) on-prem, prefer single-binary streaming/storage engines over multi-cluster JVM ecosystems." />
-            <div class="btn-row" style="margin-top:10px;">
-              <button class="btn btn-success" id="longLoopBtn" disabled style="width:100%;">&#9989; Commit Final Decision &amp; Teach Council</button>
+            <div style="background:var(--green-soft);border:1px solid var(--green-border);padding:12px;border-radius:8px;">
+              <strong style="font-size:0.86rem;color:#15803d;">Opzione 3B &mdash; Long Loop (Approva Decisione Finale e Insegna):</strong>
+              <p style="font-size:0.8rem;color:var(--muted);margin:4px 0 8px;">
+                Scegli la decisione definitiva qui sotto e clicca il bottone verde: il sistema premierà gli agenti che avevano ragione e salverà la regola per il futuro!
+              </p>
+              <label for="longLoopOption" style="margin-top:4px;">Decisione Finale Approvata dall'Umano:</label>
+              <select id="longLoopOption"></select>
+              <label for="longLoopRationale">Regola da far imparare al Consiglio:</label>
+              <input type="text" id="longLoopRationale" value="For small ops teams (<=5 engineers) on-prem, prefer single-binary streaming/storage engines over multi-cluster JVM ecosystems." />
+              <button class="btn btn-success" id="longLoopBtn" disabled style="width:100%;margin-top:10px;">&#9989; Conferma Decisione Finale e Insegna al Consiglio</button>
+              <div id="learningFeedbackToast" style="margin-top:10px;font-size:0.84rem;font-weight:700;color:#15803d;display:none;"></div>
             </div>
-            <div id="learningFeedbackToast" style="margin-top:10px;font-size:0.83rem;color:#86efac;display:none;"></div>
           </div>
         </div>
 
-        <!-- Right Column: Live Debate Feed + Synthesized ADR -->
+        <!-- Right Column: Step 2 (Live Debate + Final ADR) -->
         <div>
           <div class="card">
+            <span class="step-badge purple">PASSO 2 &mdash; Osserva gli Agenti Discutere</span>
             <div class="card-header">
-              <div>
-                <div class="eyebrow">Pillar 2 &mdash; Observable A2A Protocol</div>
-                <div class="card-title">&#128172; Live Council Debate Transcript</div>
-              </div>
-              <span class="badge" id="debateStatusBadge">Ready</span>
+              <div class="card-title">&#128172; Discussione del Consiglio in Tempo Reale</div>
+              <span class="badge" id="debateStatusBadge">In attesa di avvio</span>
             </div>
 
             <div class="debate-stream" id="debateStream">
-              <div style="text-align:center;padding:40px 20px;color:var(--muted);">
-                Click <strong>"Start Council Debate"</strong> to watch the Peer Architects propose in isolation, challenge each other with Knowledge Base citations, and converge on a formal ADR proposal.
+              <div class="placeholder-msg" style="text-align:center;padding:50px 24px;color:var(--muted);">
+                <div style="font-size:2.2rem;margin-bottom:8px;">&#128101;</div>
+                <strong style="font-size:1rem;color:var(--ink);">La sala riunioni è pronta!</strong>
+                <p style="font-size:0.88rem;margin-top:6px;">
+                  Clicca il bottone blu <strong>"1. Avvia Dibattito del Consiglio"</strong> qui a sinistra.<br/>
+                  Vedrai i 4 agenti proporre la loro idea da soli, poi criticarsi a vicenda citando le prove della Knowledge Base, e infine produrre il verbale <strong>ADR</strong> qui sotto.
+                </p>
               </div>
             </div>
           </div>
@@ -181,31 +186,31 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
       <div class="grid-2">
         <div>
           <div class="card">
-            <div class="eyebrow">Pillar 1 &amp; Pillar 2 &mdash; Swappable Architecture</div>
+            <div class="eyebrow">Requisito Slide 8 &mdash; Architettura Swappable</div>
             <div class="card-header">
-              <div class="card-title">&#10133; Hot-Swap / Add Peer Architect Agent</div>
-              <button class="btn btn-outline" id="resetAgentsBtn" style="padding:4px 10px;font-size:0.78rem;">Reset Pool</button>
+              <div class="card-title">&#10133; Aggiungi o Modifica un Agente a Caldo</div>
+              <button class="btn btn-outline" id="resetAgentsBtn" style="padding:4px 10px;font-size:0.78rem;">Ripristina i 4 Default</button>
             </div>
-            <p style="font-size:0.83rem;color:var(--muted);margin-bottom:10px;">
-              Add a new architect seat or swap any agent's LLM provider/model at runtime without code changes (Slide 8: <em>"Swappable &mdash; add an agent without rewrites"</em>).
+            <p style="font-size:0.84rem;color:var(--muted);margin-bottom:10px;">
+              Dimostra al prof che puoi aggiungere un 5° architetto (o cambiare modello LLM) in diretta senza modificare il codice del programma.
             </p>
-            <label>Agent ID:</label>
+            <label>ID Agente:</label>
             <input type="text" id="newAgentId" value="agent_cost_auditor" />
-            <label>Agent Name:</label>
-            <input type="text" id="newAgentName" value="FinOps &amp; Sustainability Architect" />
+            <label>Nome dell'Architetto:</label>
+            <input type="text" id="newAgentName" value="FinOps &amp; Cost Architect" />
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div>
-                <label>Stance / Temperament:</label>
+                <label>Carattere (Stance):</label>
                 <input type="text" id="newAgentStance" value="Cost-Optimizer" />
               </div>
               <div>
-                <label>LLM Family Label:</label>
-                <input type="text" id="newAgentFamily" value="DeepSeek / Mistral Family" />
+                <label>Famiglia Modello LLM:</label>
+                <input type="text" id="newAgentFamily" value="Mistral / DeepSeek Family" />
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div>
-                <label>Provider:</label>
+                <label>Provider API:</label>
                 <select id="newAgentProvider">
                   <option value="groq">groq</option>
                   <option value="gemini">gemini</option>
@@ -215,36 +220,36 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
                 </select>
               </div>
               <div>
-                <label>Model ID:</label>
-                <input type="text" id="newAgentModel" value="llama-3.1-8b-instant" />
+                <label>Modello Specifico:</label>
+                <input type="text" id="newAgentModel" value="openai/gpt-oss-20b" />
               </div>
             </div>
-            <label>Architect Mandate:</label>
+            <label>Mandato e Istruzioni:</label>
             <textarea id="newAgentMandate" rows="2">Full software architect focused on Total Cost of Ownership (TCO), infrastructure efficiency, and FinOps proportionality.</textarea>
-            <label>Priority Quality Attributes (comma-separated):</label>
+            <label>Priorità ISO 25010 (separate da virgola):</label>
             <input type="text" id="newAgentPriorities" value="cost, operability, resource-utilization" />
             <div class="btn-row">
-              <button class="btn btn-primary" id="saveAgentBtn" style="width:100%;">&#128190; Hot-Swap / Add Agent to Council</button>
+              <button class="btn btn-primary" id="saveAgentBtn" style="width:100%;">&#128190; Aggiungi Agente al Consiglio</button>
             </div>
           </div>
         </div>
 
         <div>
           <div class="card">
-            <div class="eyebrow">Active Council Seats (&ge;3 Distinct LLM Families)</div>
+            <div class="eyebrow">Pilastro 1 &mdash; Almeno 3 Famiglie di LLM Diverse</div>
             <div class="card-header">
-              <div class="card-title">&#128101; Peer Architect Pool &amp; Learned Trust Weights</div>
+              <div class="card-title">&#128101; Membri Attivi del Consiglio &amp; Peso di Fiducia (Trust Weight)</div>
             </div>
             <div class="cards-grid" id="agentPoolGrid"></div>
           </div>
 
           <div class="card">
-            <div class="eyebrow">Typed Message Schema &amp; Causality Trace</div>
+            <div class="eyebrow">Tracciabilità Tecnica A2A</div>
             <div class="card-header">
-              <div class="card-title">&#128269; Raw A2A Message Bus Inspector</div>
+              <div class="card-title">&#128269; Messaggi JSON Scambiati sul Bus</div>
             </div>
-            <div id="rawTraceContainer" style="max-height:420px;overflow-y:auto;font-family:Consolas,monospace;font-size:0.8rem;background:var(--bg);padding:12px;border-radius:10px;border:1px solid var(--line);">
-              No messages recorded in current session yet. Run a debate in Tab 1 to inspect typed A2A JSON contracts.
+            <div id="rawTraceContainer" style="max-height:360px;overflow-y:auto;font-family:Consolas,monospace;font-size:0.8rem;background:var(--surface-alt);padding:12px;border-radius:8px;border:1px solid var(--line);color:var(--muted);">
+              Nessun messaggio registrato. Avvia un dibattito nella Scheda 1 per ispezionare i dati JSON.
             </div>
           </div>
         </div>
@@ -258,10 +263,10 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
       <div class="grid-2">
         <div>
           <div class="card">
-            <div class="eyebrow">Pillar 3 &mdash; Long-Loop Learning State</div>
+            <div class="eyebrow">Pilastro 3 &mdash; Memoria Storica (Last_K + RAFG)</div>
             <div class="card-header">
-              <div class="card-title">&#129504; Learned Organizational Principles &amp; Trust</div>
-              <button class="btn btn-outline" id="resetMemoryBtn" style="padding:4px 10px;font-size:0.78rem;">Reset Memory</button>
+              <div class="card-title">&#129504; Regole Imparate &amp; Fiducia degli Agenti</div>
+              <button class="btn btn-outline" id="resetMemoryBtn" style="padding:4px 10px;font-size:0.78rem;">Azzera Memoria</button>
             </div>
             <div id="memoryExplorerContainer"></div>
           </div>
@@ -269,9 +274,9 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
 
         <div>
           <div class="card">
-            <div class="eyebrow">Slide 9 &mdash; Grounding &amp; Provenance</div>
+            <div class="eyebrow">Slide 9 &mdash; Biblioteca Condivisa con Condizioni Select/Reject</div>
             <div class="card-header">
-              <div class="card-title">&#128218; Shared Architectural Knowledge Base (ISO/IEC 25010, Patterns, Tactics, ADRs)</div>
+              <div class="card-title">&#128218; Knowledge Base Ufficiale (18 Documenti: ISO 25010, Pattern, Tattiche, ADR)</div>
             </div>
             <div class="cards-grid" id="kbGrid"></div>
           </div>
@@ -285,27 +290,35 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
     <section class="tab-pane" id="tab-eval">
       <div class="cards-grid" style="margin-bottom:18px;">
         <div class="card">
-          <div class="eyebrow">Slide 11 &mdash; Experiment A</div>
+          <div class="eyebrow">Slide 11 &mdash; Esperimento A</div>
           <div class="card-header">
-            <div class="card-title">&#9878; Council vs. Single-LLM Baselines</div>
-            <button class="btn btn-primary" id="runExpABtn">&#9654; Run Experiment A</button>
+            <div class="card-title">&#9878; Consiglio vs. Singoli LLM da Soli</div>
+            <button class="btn btn-primary" id="runExpABtn">&#9654; Esegui Esperimento A</button>
           </div>
           <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px;">
-            Tests whether the multi-agent Council beats each individual LLM running alone (single prompt, no roles, no debate, no feedback loop) across the 12 Held-Out Test Set scenarios.
+            Confronta i 4 modelli chiamati da soli (senza dibattito e senza memoria) contro il nostro Consiglio completo sui <strong>12 Scenari di Test</strong>.
           </p>
-          <div id="expAResults"></div>
+          <div id="expAResults">
+            <div style="padding:20px;background:var(--surface-alt);border-radius:8px;text-align:center;color:var(--muted);font-size:0.88rem;">
+              Clicca <strong>"▶ Esegui Esperimento A"</strong> qui sopra per generare la tabella comparativa.
+            </div>
+          </div>
         </div>
 
         <div class="card">
-          <div class="eyebrow">Slide 12 &mdash; Experiment B</div>
+          <div class="eyebrow">Slide 12 &mdash; Esperimento B</div>
           <div class="card-header">
-            <div class="card-title">&#128200; Feedback Loop Learning Curve (Before vs. After)</div>
-            <button class="btn btn-success" id="runExpBBtn">&#9654; Run Experiment B</button>
+            <div class="card-title">&#128200; Curva di Apprendimento (Prima vs. Dopo il Feedback)</div>
+            <button class="btn btn-success" id="runExpBBtn">&#9654; Esegui Esperimento B</button>
           </div>
           <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px;">
-            Splits the 24-scenario benchmark into <strong>12 Feedback Set</strong> scenarios and <strong>12 Held-Out Test Set</strong> scenarios. Measures Council accuracy on the Held-Out Test Set across 4 feedback training checkpoints (0, 4, 8, and 12 feedback scenarios).
+            Allena il Consiglio sui <strong>12 Scenari di Feedback</strong> (a blocchi di 4) e misura come sale la precisione sui <strong>12 Scenari di Test Inediti</strong>.
           </p>
-          <div id="expBResults"></div>
+          <div id="expBResults">
+            <div style="padding:20px;background:var(--surface-alt);border-radius:8px;text-align:center;color:var(--muted);font-size:0.88rem;">
+              Clicca <strong>"▶ Esegui Esperimento B"</strong> qui sopra per vedere la curva di apprendimento da Iterazione 0 a Iterazione 3.
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -317,17 +330,17 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
       <div class="grid-2">
         <div>
           <div class="card">
-            <div class="eyebrow">Deliverables 2, 3 &amp; 4</div>
+            <div class="eyebrow">Tutti i Documenti per l'Esame</div>
             <div class="card-header">
-              <div class="card-title">&#128193; Project Documentation &amp; ADRs</div>
+              <div class="card-title">&#128193; Scegli cosa leggere</div>
             </div>
             <div id="docListContainer" style="display:flex;flex-direction:column;gap:8px;"></div>
           </div>
 
           <div class="card">
-            <div class="eyebrow">Project Team (4 Members)</div>
+            <div class="eyebrow">Componenti del Gruppo (4)</div>
             <div class="card-header">
-              <div class="card-title">&#127891; Team Roster</div>
+              <div class="card-title">&#127891; Team di Progetto</div>
             </div>
             <ul id="teamList" style="list-style:none;font-size:0.9rem;color:var(--muted);display:grid;gap:8px;"></ul>
           </div>
@@ -336,9 +349,9 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
         <div>
           <div class="card">
             <div class="card-header">
-              <div class="card-title" id="activeDocTitle">&#128208; Document Viewer</div>
+              <div class="card-title" id="activeDocTitle">&#128214; Visualizzatore Documento</div>
             </div>
-            <div class="doc-viewer" id="docViewerContent">Select a document or ADR on the left to inspect its contents.</div>
+            <div class="doc-viewer" id="docViewerContent">Seleziona un documento a sinistra per leggerlo.</div>
           </div>
         </div>
       </div>
@@ -349,4 +362,3 @@ AWS Kinesis Data Streams + Cloud Lambda Bridge</textarea>
   <script src="/static/app.js"></script>
 </body>
 </html>
-

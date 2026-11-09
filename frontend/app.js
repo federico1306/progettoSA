@@ -1,5 +1,5 @@
 // ============================================================================
-// AI Assisted Software Architecting Council — Frontend Controller
+// AI Assisted Software Architecting Council — Frontend Controller (Clean UI)
 // ============================================================================
 
 const state = {
@@ -43,7 +43,7 @@ function connectSSE() {
   const pill = document.getElementById("sseStatusPill");
   const es = new EventSource("/api/stream");
   es.onopen = () => {
-    pill.textContent = "● A2A Bus Live (SSE)";
+    pill.textContent = "● Canale Live Attivo";
     pill.classList.add("ok");
   };
   es.onmessage = (evt) => {
@@ -61,9 +61,18 @@ function connectSSE() {
     }
   };
   es.onerror = () => {
-    pill.textContent = "○ Reconnecting Bus...";
+    pill.textContent = "○ Riconnessione...";
   };
 }
+
+const PHASE_LABELS_IT = {
+  FRAME: "Fase 1: Inquadramento",
+  PROPOSE: "Fase 2: Proposta Isolata",
+  CRITIQUE: "Fase 3: Critica & Dibattito",
+  CONVERGE: "Fase 4: Votazione",
+  DECIDE: "Fase 5: Decisione ADR",
+  HUMAN_FEEDBACK: "Intervento Architetto Umano",
+};
 
 // Render a single A2A message card in the Live Debate Stream
 function appendLiveMessage(msg) {
@@ -85,13 +94,23 @@ function appendLiveMessage(msg) {
   let citationsHtml = "";
   if (contract && contract.citations && contract.citations.length > 0) {
     citationsHtml = contract.citations
-      .map((cid) => `<span class="badge cite" title="Grounded KB / Memory Provenance">[${cid}]</span>`)
+      .map((cid) => `<span class="badge cite" title="Fonte citata dalla Knowledge Base">📚 ${cid}</span>`)
       .join(" ");
   }
 
   let mindChangedBadge = "";
   if (contract && contract.mind_changed) {
-    mindChangedBadge = `<span class="badge changed">🔄 Mind Changed: ${contract.change_reason || "Peer Evidence"}</span>`;
+    mindChangedBadge = `<span class="badge changed">🔄 Ha cambiato idea: ${contract.change_reason || "Convinto dalle prove dei colleghi"}</span>`;
+  }
+
+  let choiceBannerHtml = "";
+  if (contract && contract.selected_option) {
+    choiceBannerHtml = `
+      <div class="choice-banner">
+        💡 <strong>Opzione Votata:</strong> <span style="color:var(--primary);font-weight:700;">${contract.selected_option}</span>
+        <span style="float:right;font-size:0.8rem;color:var(--muted);">Sicurezza: <strong>${Math.round(contract.confidence * 100)}%</strong></span>
+      </div>
+    `;
   }
 
   let tradeoffsHtml = "";
@@ -99,30 +118,31 @@ function appendLiveMessage(msg) {
     const items = Object.entries(contract.tradeoffs)
       .map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`)
       .join("");
-    tradeoffsHtml = `<ul style="margin-top:6px;padding-left:18px;font-size:0.82rem;color:var(--muted);">${items}</ul>`;
+    tradeoffsHtml = `
+      <div style="margin-top:8px;background:var(--surface);padding:8px 12px;border-radius:8px;border:1px solid var(--line);">
+        <strong style="font-size:0.78rem;color:var(--muted);">⚖ Compromessi (Trade-off) analizzati:</strong>
+        <ul style="margin-top:4px;padding-left:18px;font-size:0.82rem;color:var(--muted);">${items}</ul>
+      </div>`;
   }
 
-  const confBadge = contract
-    ? `<span class="badge">Confidence: ${Math.round(contract.confidence * 100)}%</span>`
-    : "";
+  const phaseLabel = PHASE_LABELS_IT[msg.phase] || msg.phase;
 
   card.innerHTML = `
     <div class="msg-header">
       <div class="msg-sender">
         <span>${msg.sender_name}</span>
-        <span class="badge" style="color:#fff;">${msg.sender_stance}</span>
-        <span class="badge">${msg.llm_family} (${msg.llm_model})</span>
-        ${confBadge}
+        <span class="badge stance">Carattere: ${msg.sender_stance}</span>
+        <span class="badge">AI: ${msg.llm_family}</span>
         ${mindChangedBadge}
       </div>
-      <span class="badge">${msg.phase}${msg.round_num ? " R" + msg.round_num : ""} &bull; ${msg.latency_ms}ms</span>
+      <span class="badge">${phaseLabel}</span>
     </div>
+    ${choiceBannerHtml}
     <div class="msg-body">${formatMarkdownInline(msg.content)}</div>
     ${tradeoffsHtml}
     <div class="msg-meta">
-      <span>ID: <code>${msg.message_id}</code> &rarr; <code>${msg.recipient_id}</code></span>
-      <span>Mode: <code>${msg.execution_mode}</code></span>
-      ${citationsHtml}
+      ${citationsHtml ? `<span>Fonti citate: ${citationsHtml}</span>` : ""}
+      <span style="margin-left:auto;">Modello: <code>${msg.llm_model}</code> (${msg.latency_ms}ms)</span>
     </div>
   `;
 
@@ -148,7 +168,7 @@ function renderADR(session) {
   container.style.display = "block";
 
   const votesHtml = Object.entries(adr.vote_breakdown || {})
-    .map(([agent, opt]) => `<li><strong>${agent}:</strong> ${opt}</li>`)
+    .map(([agent, opt]) => `<li style="margin-bottom:4px;"><strong>${agent}:</strong> ${opt}</li>`)
     .join("");
 
   const dissentHtml =
@@ -157,80 +177,79 @@ function renderADR(session) {
           .map(
             (d) => `
           <div class="dissent-card">
-            <strong>⚠️ Minority Dissent — ${d.agent_name} (${d.stance} &bull; ${d.llm_family})</strong><br/>
-            Preferred: <strong>${d.preferred_option}</strong><br/>
-            Rationale: ${d.rationale}
-            <div style="margin-top:4px;">Citations: ${(d.citations || []).map((c) => `[${c}]`).join(", ")}</div>
+            <strong>⚠️ Opinione Contraria (Minoranza) — ${d.agent_name} (${d.stance})</strong><br/>
+            Voleva scegliere: <strong>${d.preferred_option}</strong><br/>
+            Motivazione: ${d.rationale}
+            <div style="margin-top:4px;font-size:0.78rem;">Fonti citate: ${(d.citations || []).map((c) => `[${c}]`).join(", ")}</div>
           </div>`
           )
           .join("")
-      : `<div style="margin-top:8px;font-size:0.85rem;color:#86efac;">✓ Unanimous Council Consensus (0 Minority Dissents)</div>`;
-
-  const tradeoffsHtml = Object.entries(adr.tradeoffs || {})
-    .map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`)
-    .join("");
+      : `<div style="margin-top:8px;padding:10px;background:var(--green-soft);border:1px solid var(--green-border);border-radius:8px;font-size:0.86rem;color:#15803d;font-weight:600;">✓ Consenso Unanime! Tutti i 4 agenti sono d'accordo (0 Dissensi).</div>`;
 
   const madrOptionsHtml = (adr.options_analysis || [])
     .map(
       (oa) => `
-      <div style="background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:8px;margin-top:6px;border-left:3px solid ${oa.is_chosen ? "#22c55e" : "#64748b"};">
-        <div style="font-size:0.83rem;font-weight:800;color:${oa.is_chosen ? "#86efac" : "var(--ink)"};">
-          ${oa.is_chosen ? "✅ [CHOSEN] " : "❌ [REJECTED] "}${oa.option_name}
+      <div style="background:var(--surface-alt);padding:10px 12px;border-radius:8px;margin-top:8px;border:1px solid var(--line);border-left:4px solid ${oa.is_chosen ? "#16a34a" : "#94a3b8"};">
+        <div style="font-size:0.88rem;font-weight:800;color:${oa.is_chosen ? "#15803d" : "var(--ink)"};">
+          ${oa.is_chosen ? "✅ OPZIONE SCELTA: " : "❌ OPZIONE SCARTATA: "}${oa.option_name}
         </div>
-        <div style="font-size:0.78rem;color:#86efac;margin-top:2px;">+ Pros: ${(oa.pros || []).join("; ")}</div>
-        <div style="font-size:0.78rem;color:#fca5a5;">- Cons: ${(oa.cons || []).join("; ")}</div>
+        <div style="font-size:0.82rem;color:#15803d;margin-top:4px;"><strong>👍 Pro:</strong> ${(oa.pros || []).join("; ")}</div>
+        <div style="font-size:0.82rem;color:#dc2626;margin-top:2px;"><strong>👎 Contro:</strong> ${(oa.cons || []).join("; ")}</div>
       </div>`
     )
     .join("");
 
   const gateBadge = adr.validation_gate_passed
-    ? `<span class="pill ok">✓ Validation Gate Passed</span>`
-    : `<span class="pill" style="color:#fca5a5;">⚠ Validation Gate Retry</span>`;
+    ? `<span class="pill ok">✓ Controllo Vincoli Superato</span>`
+    : `<span class="pill" style="color:#dc2626;">⚠ Vincoli Corretti</span>`;
 
   container.innerHTML = `
     <div class="adr-box">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line);">
         <div>
-          <div class="eyebrow" style="color:#86efac;">Phase 5 &mdash; MADR-Compliant Architecture Decision Record</div>
-          <h3 style="font-size:1.2rem;font-weight:900;">${adr.adr_id}: ${adr.title}</h3>
+          <span class="step-badge green">RISULTATO FINALE DEL CONSIGLIO (Verbale MADR)</span>
+          <h3 style="font-size:1.25rem;font-weight:800;color:var(--ink);margin-top:4px;">${adr.adr_id}: ${adr.title}</h3>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           ${gateBadge}
-          <span class="pill ok">${adr.consensus_type} (${Math.round(adr.consensus_score * 100)}%)</span>
-          <span class="pill accent">${adr.status}</span>
+          <span class="pill accent">Consenso: ${Math.round(adr.consensus_score * 100)}% (${adr.consensus_type})</span>
         </div>
       </div>
 
-      <p style="font-size:0.95rem;margin-bottom:6px;">
-        <strong>Selected Decision:</strong> <span style="color:#86efac;font-weight:800;font-size:1.05rem;">${adr.chosen_option}</span>
-      </p>
-      <p style="font-size:0.82rem;color:#f0abfc;margin-bottom:8px;">
-        <strong>Decision Drivers (ISO 25010):</strong> ${(adr.decision_drivers || []).join(" • ")}
-      </p>
-      <p style="font-size:0.88rem;color:var(--ink);margin-bottom:10px;">${formatMarkdownInline(adr.rationale)}</p>
+      <div style="background:var(--green-soft);border:1px solid var(--green-border);padding:14px 16px;border-radius:10px;margin-bottom:14px;">
+        <div style="font-size:0.8rem;font-weight:700;color:#15803d;text-transform:uppercase;">Soluzione Tecnologica Proposta dal Consiglio:</div>
+        <div style="font-size:1.15rem;font-weight:800;color:#14532d;margin-top:2px;">🏆 ${adr.chosen_option}</div>
+        <p style="font-size:0.88rem;color:var(--ink);margin-top:8px;">${formatMarkdownInline(adr.rationale)}</p>
+      </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;">
-        <div style="background:rgba(0,0,0,0.22);padding:12px;border-radius:10px;">
-          <strong style="font-size:0.84rem;color:var(--muted);">Council Vote Breakdown:</strong>
-          <ul style="padding-left:18px;margin-top:6px;font-size:0.84rem;">${votesHtml}</ul>
+        <div style="background:var(--surface-alt);padding:12px 14px;border-radius:8px;border:1px solid var(--line);">
+          <strong style="font-size:0.85rem;color:var(--ink);">🗳 Come hanno votato i 4 Agenti:</strong>
+          <ul style="padding-left:18px;margin-top:6px;font-size:0.84rem;color:var(--muted);">${votesHtml}</ul>
         </div>
-        <div style="background:rgba(0,0,0,0.22);padding:12px;border-radius:10px;">
-          <strong style="font-size:0.84rem;color:var(--muted);">Synthesized Trade-offs &amp; Citations:</strong>
-          <ul style="padding-left:18px;margin-top:6px;font-size:0.82rem;">${tradeoffsHtml}</ul>
-          <div style="margin-top:6px;font-size:0.8rem;color:#f0abfc;">
-            Provenance Citations: ${(adr.citations || []).map((c) => `[${c}]`).join(", ")}
-          </div>
+        <div style="background:var(--surface-alt);padding:12px 14px;border-radius:8px;border:1px solid var(--line);">
+          <strong style="font-size:0.85rem;color:var(--ink);">🎯 Qualità ISO 25010 &amp; Fonti Citate:</strong>
+          <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;">
+            <strong>Drivers:</strong> ${(adr.decision_drivers || []).join(" • ")}
+          </p>
+          <p style="margin-top:8px;font-size:0.82rem;color:var(--purple);font-weight:700;">
+            📚 Prove Citate: ${(adr.citations || []).map((c) => `[${c}]`).join(", ")}
+          </p>
         </div>
       </div>
 
-      <div style="margin-top:12px;">
-        <strong style="font-size:0.85rem;color:var(--muted);">MADR Considered Options Analysis (Pros &amp; Cons):</strong>
+      <div style="margin-top:16px;">
+        <strong style="font-size:0.9rem;color:var(--ink);">📋 Analisi Pro &amp; Contro di Tutte le Opzioni (Standard MADR):</strong>
         ${madrOptionsHtml}
       </div>
 
-      <div style="margin-top:12px;">
-        <strong style="font-size:0.85rem;color:var(--muted);">Minority View &amp; Dissent Log (Slide 7):</strong>
+      <div style="margin-top:16px;">
+        <strong style="font-size:0.9rem;color:var(--ink);">📢 Registro delle Opinioni di Minoranza (Dissent):</strong>
         ${dissentHtml}
+      </div>
+
+      <div style="margin-top:16px;padding:12px;background:var(--primary-soft);border-radius:8px;border:1px solid #bfdbfe;font-size:0.86rem;color:var(--primary);">
+        👉 <strong>Cosa fare adesso?</strong> Guarda a sinistra nel riquadro <strong>PASSO 3</strong>: puoi chiedere una modifica al volo (<strong>Opzione 3A</strong>) oppure approvare la decisione finale con il bottone verde (<strong>Opzione 3B</strong>)!
       </div>
     </div>
   `;
@@ -258,7 +277,7 @@ function renderADR(session) {
 document.getElementById("startDebateBtn").addEventListener("click", async () => {
   const btn = document.getElementById("startDebateBtn");
   btn.disabled = true;
-  btn.textContent = "⏳ Council Debating...";
+  btn.textContent = "⏳ Dibattito in corso...";
 
   const stream = document.getElementById("debateStream");
   stream.innerHTML = "";
@@ -307,13 +326,13 @@ document.getElementById("startDebateBtn").addEventListener("click", async () => 
     state.currentSession = session;
     (session.messages || []).forEach((m) => appendLiveMessage(m));
     renderADR(session);
-    document.getElementById("debateStatusBadge").textContent = `Completed (${session.total_latency_ms}ms)`;
+    document.getElementById("debateStatusBadge").textContent = `Completato in ${session.total_latency_ms}ms`;
   } catch (err) {
     console.error(err);
-    alert("Error running debate: " + err.message);
+    alert("Errore durante il dibattito: " + err.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = "⚡ Start Council Debate";
+    btn.textContent = "▶ 1. Avvia Dibattito del Consiglio";
   }
 });
 
@@ -322,12 +341,12 @@ document.getElementById("shortLoopBtn").addEventListener("click", async () => {
   if (!state.currentSession) return;
   const critique = document.getElementById("shortLoopInput").value.trim();
   if (!critique) {
-    alert("Please enter your Human Architect critique or constraint for the Short Loop.");
+    alert("Scrivi prima una tua osservazione o critica nella casella dell'Opzione 3A!");
     return;
   }
   const btn = document.getElementById("shortLoopBtn");
   btn.disabled = true;
-  btn.textContent = "⏳ Revising Proposal...";
+  btn.textContent = "⏳ Gli agenti stanno ridiscutendo...";
   const fastSim = document.getElementById("fastSimCheck").checked;
 
   try {
@@ -345,10 +364,10 @@ document.getElementById("shortLoopBtn").addEventListener("click", async () => {
     (updatedSession.messages || []).forEach((m) => appendLiveMessage(m));
     renderADR(updatedSession);
   } catch (err) {
-    alert("Short-loop error: " + err.message);
+    alert("Errore Short-loop: " + err.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = "💬 Send Short-Loop Critique & Revise Proposal";
+    btn.textContent = "💬 Invia Critica e Fai Ridiscutere gli Agenti";
   }
 });
 
@@ -373,10 +392,10 @@ document.getElementById("longLoopBtn").addEventListener("click", async () => {
     const res = await resp.json();
     const toast = document.getElementById("learningFeedbackToast");
     toast.style.display = "block";
-    toast.innerHTML = `✓ <strong>Long-Loop Updated!</strong> Stored Principle <code>${res.learning_update.new_principle.id}</code> and updated Per-Agent Trust Weights.`;
+    toast.innerHTML = `✅ <strong>Decisione salvata!</strong> Il Consiglio ha imparato la regola <code>${res.learning_update.new_principle.id}</code> e ha aggiornato la fiducia degli agenti!`;
     await loadAllInitialData();
   } catch (err) {
-    alert("Long-loop error: " + err.message);
+    alert("Errore Long-loop: " + err.message);
   } finally {
     btn.disabled = false;
   }
@@ -393,7 +412,7 @@ document.getElementById("runBaselineBtn").addEventListener("click", async () => 
   const fastSim = document.getElementById("fastSimCheck").checked;
   const box = document.getElementById("baselineCompareContainer");
   box.style.display = "block";
-  box.innerHTML = `<div class="card">⏳ Running Single-LLM Baselines (no roles, no debate, no KB memory)...</div>`;
+  box.innerHTML = `<div class="card">⏳ Interrogazione dei singoli modelli AI da soli (senza dibattito)...</div>`;
 
   const resp = await fetch(`/api/baseline/compare?fast_sim=${fastSim}`, {
     method: "POST",
@@ -409,21 +428,21 @@ document.getElementById("runBaselineBtn").addEventListener("click", async () => 
       (b) => `
       <tr>
         <td><strong>${b.llm_family}</strong><br/><span style="font-size:0.76rem;color:var(--muted);">${b.model}</span></td>
-        <td>${b.selected_option}</td>
+        <td><strong>${b.selected_option}</strong></td>
         <td>${Math.round(b.confidence * 100)}%</td>
-        <td>${b.citation_count} citations</td>
-        <td style="font-size:0.8rem;color:var(--muted);">${b.summary_argument}</td>
+        <td>${b.citation_count} fonti</td>
+        <td style="font-size:0.82rem;color:var(--muted);">${b.summary_argument}</td>
       </tr>`
     )
     .join("");
 
   box.innerHTML = `
-    <div class="card">
-      <div class="eyebrow">Slide 11 &mdash; Single-Prompt Baseline Comparison</div>
-      <div class="card-title" style="margin-bottom:8px;">🤖 Single LLMs Alone (No Agents, No Debate, No Feedback Loop)</div>
+    <div class="card" style="margin-top:18px;">
+      <div class="eyebrow">Slide 11 &mdash; Confronto con Baseline</div>
+      <div class="card-title" style="margin-bottom:8px;">🤖 Cosa rispondono le AI Singole da sole (Senza Consiglio e Senza Dibattito)</div>
       <table class="data-table">
         <thead>
-          <tr><th>Single LLM</th><th>Selected Option</th><th>Conf.</th><th>Evidence</th><th>Unchallenged Output</th></tr>
+          <tr><th>Modello Singolo</th><th>Scelta</th><th>Sicurezza</th><th>Prove Citate</th><th>Motivazione (senza contraddittorio)</th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -437,19 +456,19 @@ function renderAgentPool(agents) {
   grid.innerHTML = agents
     .map(
       (a) => `
-      <div class="card" style="margin-bottom:0;border-top:4px solid ${a.color || "#b800e6"};">
+      <div class="card" style="margin-bottom:0;border-top:4px solid var(--primary);">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:1.5rem;">${a.icon || "🤖"}</span>
-          <span class="badge" style="color:#86efac;">Trust Weight: ${a.trust_weight}x</span>
+          <span style="font-size:1.6rem;">${a.icon || "🤖"}</span>
+          <span class="pill ok">Fiducia: ${a.trust_weight}x</span>
         </div>
         <h3 style="margin-top:8px;font-size:1.05rem;">${a.name}</h3>
-        <p style="font-size:0.8rem;color:#f0abfc;font-weight:700;">Stance: ${a.stance} &bull; ${a.llm_family}</p>
-        <p style="font-size:0.78rem;color:var(--muted);margin:6px 0;">Provider: <code>${a.provider}</code> | Model: <code>${a.model}</code></p>
-        <p style="font-size:0.82rem;color:var(--ink);margin-bottom:10px;">${a.mandate}</p>
+        <p style="font-size:0.82rem;color:var(--primary);font-weight:700;">Carattere: ${a.stance} &bull; ${a.llm_family}</p>
+        <p style="font-size:0.78rem;color:var(--muted);margin:6px 0;">Provider: <code>${a.provider}</code> | Modello: <code>${a.model}</code></p>
+        <p style="font-size:0.84rem;color:var(--ink);margin-bottom:12px;">${a.mandate}</p>
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span class="badge">Priorities: ${(a.priorities || []).join(", ")}</span>
-          <button class="btn btn-outline" style="padding:3px 9px;font-size:0.75rem;" onclick="toggleAgentSeat('${a.agent_id}', ${!a.enabled})">
-            ${a.enabled ? "Disable" : "Enable"}
+          <span class="badge">Priorità: ${(a.priorities || []).join(", ")}</span>
+          <button class="btn btn-outline" style="padding:4px 10px;font-size:0.76rem;" onclick="toggleAgentSeat('${a.agent_id}', ${!a.enabled})">
+            ${a.enabled ? "Disattiva" : "Attiva"}
           </button>
         </div>
       </div>`
@@ -484,7 +503,7 @@ document.getElementById("saveAgentBtn").addEventListener("click", async () => {
     body: JSON.stringify(payload),
   });
   await loadAllInitialData();
-  alert(`Agent '${payload.name}' hot-swapped into the active Council pool!`);
+  alert(`L'agente '${payload.name}' è stato aggiunto a caldo nel Consiglio!`);
 });
 
 document.getElementById("resetAgentsBtn").addEventListener("click", async () => {
@@ -500,12 +519,14 @@ function renderKnowledgeAndMemory(kbItems, memoryState) {
       (item) => `
       <div class="card" style="margin-bottom:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span class="badge cite">[${item.id}]</span>
+          <span class="badge cite">📚 ${item.id}</span>
           <span class="badge">${item.category}</span>
         </div>
-        <h3 style="font-size:0.96rem;margin-bottom:6px;">${item.title}</h3>
+        <h3 style="font-size:0.96rem;margin-bottom:6px;color:var(--ink);">${item.title}</h3>
         <p style="font-size:0.82rem;color:var(--muted);margin-bottom:8px;">${item.summary}</p>
-        <div style="font-size:0.75rem;color:#86efac;">Provenance Source: ${item.source}</div>
+        <div style="font-size:0.76rem;color:#15803d;margin-bottom:4px;"><strong>✔ Select when:</strong> ${(item.selection_conditions || []).join(", ")}</div>
+        <div style="font-size:0.76rem;color:#dc2626;margin-bottom:6px;"><strong>✖ Reject when:</strong> ${(item.rejection_conditions || []).join(", ")}</div>
+        <div style="font-size:0.75rem;color:var(--subtle);">Fonte: ${item.source}</div>
       </div>`
     )
     .join("");
@@ -517,10 +538,10 @@ function renderKnowledgeAndMemory(kbItems, memoryState) {
   const weightBars = Object.entries(weights)
     .map(
       ([aid, w]) => `
-      <div style="margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;font-size:0.82rem;">
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:0.84rem;margin-bottom:3px;">
           <span><code>${aid}</code></span>
-          <strong>${w}x trust multiplier</strong>
+          <strong>Peso di fiducia: ${w}x</strong>
         </div>
         <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100, (w / 2.0) * 100)}%;"></div></div>
       </div>`
@@ -532,22 +553,22 @@ function renderKnowledgeAndMemory(kbItems, memoryState) {
       ? principles
           .map(
             (p) => `
-          <div style="background:var(--bg);padding:10px 12px;border-radius:9px;border:1px solid var(--line);margin-bottom:8px;">
-            <span class="badge cite">[${p.id}]</span> <strong>Preferred: ${p.preferred_pattern}</strong>
+          <div style="background:var(--surface-alt);padding:10px 12px;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;">
+            <span class="badge cite">${p.id}</span> <strong>Scelta Preferita: ${p.preferred_pattern}</strong>
             <p style="font-size:0.82rem;color:var(--muted);margin-top:4px;">${p.principle}</p>
           </div>`
           )
           .join("")
-      : `<p style="font-size:0.84rem;color:var(--muted);">No learned principles yet. Commit a final decision in Tab 1 or run Experiment B in Tab 4.</p>`;
+      : `<p style="font-size:0.84rem;color:var(--muted);">Nessuna regola imparata finora. Approva una decisione nella Scheda 1 (Opzione 3B) oppure avvia l'Esperimento B nella Scheda 4.</p>`;
 
   memDiv.innerHTML = `
-    <h4 style="font-size:0.9rem;margin-bottom:8px;color:var(--muted);">Per-Model / Per-Agent Trust Weights:</h4>
+    <h4 style="font-size:0.9rem;margin-bottom:8px;color:var(--ink);">Fiducia Guadagnata dagli Agenti:</h4>
     ${weightBars}
-    <h4 style="font-size:0.9rem;margin:16px 0 8px;color:var(--muted);">Learned Architectural Principles (${principles.length}):</h4>
+    <h4 style="font-size:0.9rem;margin:18px 0 8px;color:var(--ink);">Regole Aziendali Imparate (${principles.length}):</h4>
     ${principlesHtml}
   `;
 
-  document.getElementById("memoryCountPill").textContent = `Learned Principles: ${principles.length}`;
+  document.getElementById("memoryCountPill").textContent = `Regole Imparate: ${principles.length}`;
 }
 
 document.getElementById("resetMemoryBtn").addEventListener("click", async () => {
@@ -560,46 +581,46 @@ document.getElementById("runExpABtn").addEventListener("click", async () => {
   const btn = document.getElementById("runExpABtn");
   const out = document.getElementById("expAResults");
   btn.disabled = true;
-  out.innerHTML = "<p>⏳ Evaluating Single-LLM Baselines vs. Architect Council on 12 Held-Out Test Scenarios...</p>";
+  out.innerHTML = "<p style='padding:12px;'>⏳ Calcolo in corso sui 12 Scenari di Test...</p>";
   try {
     const resp = await fetch("/api/evaluate/experiment-a?fast_sim=true", { method: "POST" });
     const data = await resp.json();
     const rows = (data.systems || [])
       .map(
         (s) => `
-        <tr style="${s.system_type === "architect_council" ? "background:rgba(34,197,94,0.09);font-weight:700;" : ""}">
+        <tr style="${s.system_type === "architect_council" ? "background:var(--green-soft);font-weight:700;" : ""}">
           <td>${s.system_name}</td>
           <td>
             <div style="display:flex;align-items:center;gap:8px;">
               <span>${s.accuracy_pct}%</span>
-              <div class="bar-track" style="width:90px;"><div class="bar-fill" style="width:${s.accuracy_pct}%;"></div></div>
+              <div class="bar-track" style="width:80px;"><div class="bar-fill" style="width:${s.accuracy_pct}%;"></div></div>
             </div>
           </td>
           <td>${s.weighted_quality_pct}%</td>
+          <td>${s.avg_driver_coverage_pct || 100}%</td>
           <td>${s.avg_tradeoffs}</td>
-          <td>${s.avg_citations}</td>
         </tr>`
       )
       .join("");
 
     out.innerHTML = `
-      <div style="display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap;">
-        <div style="background:var(--bg);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
-          <div style="font-size:0.78rem;color:var(--muted);">Best Single LLM Alone</div>
+      <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+        <div style="background:var(--surface-alt);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
+          <div style="font-size:0.78rem;color:var(--muted);">Miglior AI Singola da Sola</div>
           <div class="stat-big" style="color:var(--amber);">${data.best_single_llm_accuracy_pct}%</div>
         </div>
-        <div style="background:var(--bg);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
-          <div style="font-size:0.78rem;color:var(--muted);">Full Architect Council</div>
+        <div style="background:var(--green-soft);padding:12px 16px;border-radius:10px;border:1px solid var(--green-border);flex:1;">
+          <div style="font-size:0.78rem;color:#15803d;">Nostro Consiglio Completo</div>
           <div class="stat-big" style="color:var(--green);">${data.council_full_accuracy_pct}%</div>
         </div>
-        <div style="background:var(--bg);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
-          <div style="font-size:0.78rem;color:var(--muted);">Council Gain vs. Best Single</div>
+        <div style="background:var(--primary-soft);padding:12px 16px;border-radius:10px;border:1px solid #bfdbfe;flex:1;">
+          <div style="font-size:0.78rem;color:var(--primary);">Vantaggio del Consiglio</div>
           <div class="stat-big">+${data.gain_over_best_single_pct}%</div>
         </div>
       </div>
       <table class="data-table">
         <thead>
-          <tr><th>System</th><th>Exact Accuracy</th><th>Quality Score</th><th>Avg Trade-offs</th><th>Avg Citations</th></tr>
+          <tr><th>Sistema Valutato</th><th>Precisione Esatta</th><th>Qualità</th><th>Driver Coperti</th><th>Trade-off</th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -614,7 +635,7 @@ document.getElementById("runExpBBtn").addEventListener("click", async () => {
   const btn = document.getElementById("runExpBBtn");
   const out = document.getElementById("expBResults");
   btn.disabled = true;
-  out.innerHTML = "<p>⏳ Running 4-Iteration Feedback Learning Curve on 12 Held-Out Test Set Scenarios...</p>";
+  out.innerHTML = "<p style='padding:12px;'>⏳ Calcolo curva di apprendimento sui 12 Scenari di Test...</p>";
   try {
     const resp = await fetch("/api/evaluate/experiment-b?fast_sim=true", { method: "POST" });
     const data = await resp.json();
@@ -622,12 +643,12 @@ document.getElementById("runExpBBtn").addEventListener("click", async () => {
       .map(
         (c) => `
         <tr>
-          <td><strong>Iteration ${c.iteration}</strong> (${c.feedback_scenarios_seen} Feedback Scenarios)</td>
-          <td>${c.learned_principles_count} principles</td>
+          <td><strong>Tappa ${c.iteration}</strong> (dopo ${c.feedback_scenarios_seen} feedback)</td>
+          <td>${c.learned_principles_count} regole</td>
           <td>
             <div style="display:flex;align-items:center;gap:8px;">
               <strong>${c.accuracy_pct}%</strong>
-              <div class="bar-track" style="width:100px;"><div class="bar-fill" style="width:${c.accuracy_pct}%;"></div></div>
+              <div class="bar-track" style="width:90px;"><div class="bar-fill" style="width:${c.accuracy_pct}%;"></div></div>
             </div>
           </td>
           <td>${c.weighted_quality_pct}%</td>
@@ -637,23 +658,23 @@ document.getElementById("runExpBBtn").addEventListener("click", async () => {
       .join("");
 
     out.innerHTML = `
-      <div style="display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap;">
-        <div style="background:var(--bg);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
-          <div style="font-size:0.78rem;color:var(--muted);">Before Feedback (Iter 0)</div>
+      <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+        <div style="background:var(--surface-alt);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
+          <div style="font-size:0.78rem;color:var(--muted);">Prima del Feedback (Tappa 0)</div>
           <div class="stat-big" style="color:var(--amber);">${data.accuracy_before_feedback_pct}%</div>
         </div>
-        <div style="background:var(--bg);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
-          <div style="font-size:0.78rem;color:var(--muted);">After Feedback (Iter 3)</div>
+        <div style="background:var(--green-soft);padding:12px 16px;border-radius:10px;border:1px solid var(--green-border);flex:1;">
+          <div style="font-size:0.78rem;color:#15803d;">Dopo il Feedback (Tappa 3)</div>
           <div class="stat-big" style="color:var(--green);">${data.accuracy_after_feedback_pct}%</div>
         </div>
-        <div style="background:var(--bg);padding:12px 16px;border-radius:10px;border:1px solid var(--line);flex:1;">
-          <div style="font-size:0.78rem;color:var(--muted);">Held-Out Accuracy Gain</div>
+        <div style="background:var(--primary-soft);padding:12px 16px;border-radius:10px;border:1px solid #bfdbfe;flex:1;">
+          <div style="font-size:0.78rem;color:var(--primary);">Miglioramento Imparato</div>
           <div class="stat-big">+${data.accuracy_improvement_pct}%</div>
         </div>
       </div>
       <table class="data-table">
         <thead>
-          <tr><th>Learning Checkpoint</th><th>Memory Size</th><th>Held-Out Test Accuracy</th><th>Quality Score</th><th>Avg Consensus</th></tr>
+          <tr><th>Tappa di Apprendimento</th><th>Memoria</th><th>Precisione su Test</th><th>Qualità</th><th>Consenso</th></tr>
         </thead>
         <tbody>${curveRows}</tbody>
       </table>
@@ -692,7 +713,7 @@ async function loadAllInitialData() {
       state.scenarios.forEach((s) => {
         const opt = document.createElement("option");
         opt.value = s.id;
-        opt.textContent = `[${s.id} • ${s.split.toUpperCase()}] ${s.title}`;
+        opt.textContent = `[${s.id} • ${s.split === "feedback" ? "ALLENAMENTO" : "TEST ESAME"}] ${s.title}`;
         sel.appendChild(opt);
       });
       sel.addEventListener("change", () => {
@@ -719,7 +740,7 @@ async function loadAllInitialData() {
             `<button class="btn btn-outline" style="justify-content:flex-start;text-align:left;" onclick="showDoc(${idx})">📄 ${d.title}</button>`
         )
         .join("");
-      if (document.getElementById("docViewerContent").textContent.startsWith("Select a document")) {
+      if (document.getElementById("docViewerContent").textContent.startsWith("Seleziona")) {
         window.showDoc(0);
       }
     }
@@ -731,7 +752,7 @@ async function loadAllInitialData() {
 window.showDoc = function (idx) {
   const doc = state.docs[idx];
   if (!doc) return;
-  document.getElementById("activeDocTitle").textContent = "📐 " + doc.title;
+  document.getElementById("activeDocTitle").textContent = "📖 " + doc.title;
   document.getElementById("docViewerContent").textContent = doc.content;
 };
 
@@ -739,4 +760,3 @@ window.addEventListener("DOMContentLoaded", () => {
   connectSSE();
   loadAllInitialData();
 });
-
